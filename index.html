@@ -1,0 +1,544 @@
+// app.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicialização do sistema
+    initSystem();
+    
+    // Configuração dos gráficos
+    setupCharts();
+    
+    // Configuração da navegação
+    setupNavigation();
+    
+    // Configuração dos formulários
+    setupForms();
+    
+    // Configuração das funcionalidades
+    setupFeatures();
+});
+
+// Variáveis globais para simular banco de dados
+let produtos = [];
+let movimentacoes = [];
+let nextProdutoId = 1;
+
+// Inicialização do sistema
+function initSystem() {
+    // Carregar dados do localStorage
+    loadFromLocalStorage();
+    
+    // Configurar data/hora atual nos formulários
+    document.getElementById('data-mov').value = getCurrentDateTime();
+    document.getElementById('fabricacao').valueAsDate = new Date();
+    
+    // Gerar código automático para novo produto
+    document.getElementById('codigo').value = 'PROD' + nextProdutoId.toString().padStart(4, '0');
+}
+
+// Configuração dos gráficos
+function setupCharts() {
+    // Gráfico de movimentações
+    const movimentacoesCtx = document.getElementById('movimentacoesChart').getContext('2d');
+    const movimentacoesChart = new Chart(movimentacoesCtx, {
+        type: 'line',
+        data: {
+            labels: ['01/03', '05/03', '10/03', '15/03', '20/03', '25/03', '30/03'],
+            datasets: [
+                {
+                    label: 'Entradas',
+                    data: [12, 19, 3, 5, 2, 3, 15],
+                    borderColor: '#27ae60',
+                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: 'Saídas',
+                    data: [7, 11, 5, 8, 3, 7, 10],
+                    borderColor: '#e74c3c',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    
+    // Gráfico de status do estoque
+    const statusEstoqueCtx = document.getElementById('statusEstoqueChart').getContext('2d');
+    const statusEstoqueChart = new Chart(statusEstoqueCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Em Estoque', 'Vencimento Próximo', 'Fora de Estoque'],
+            datasets: [{
+                data: [85, 8, 7],
+                backgroundColor: [
+                    '#27ae60',
+                    '#f39c12',
+                    '#e74c3c'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        }
+    });
+}
+
+// Configuração da navegação
+function setupNavigation() {
+    // Sidebar toggle para mobile
+    document.getElementById('sidebarCollapse').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.querySelector('.header').classList.toggle('active');
+        document.querySelector('.main-content').classList.toggle('active');
+        document.querySelector('.footer').classList.toggle('active');
+    });
+    
+    // Navegação do menu
+    const menuLinks = document.querySelectorAll('.sidebar a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (this.getAttribute('href').startsWith('#')) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href').substring(1);
+                showPage(targetId);
+                
+                // Atualizar título da página
+                updatePageTitle(targetId);
+                
+                // Atualizar breadcrumb
+                updateBreadcrumb(targetId);
+            }
+        });
+    });
+    
+    // Botão Novo Produto
+    document.getElementById('novo-produto').addEventListener('click', function() {
+        showPage('cadastro-produtos');
+        updatePageTitle('cadastro-produtos');
+        updateBreadcrumb('cadastro-produtos');
+    });
+}
+
+// Mostrar página específica
+function showPage(pageId) {
+    // Esconder todas as páginas
+    const pages = document.querySelectorAll('.page-section');
+    pages.forEach(page => {
+        page.style.display = 'none';
+    });
+    
+    // Mostrar a página solicitada
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.style.display = 'block';
+        targetPage.classList.add('fade-in');
+    }
+}
+
+// Atualizar título da página
+function updatePageTitle(pageId) {
+    const titleMap = {
+        'dashboard': 'Dashboard',
+        'cadastro-produtos': 'Cadastro de Produtos',
+        'lista-produtos': 'Estoque de Produtos',
+        'movimentacoes': 'Movimentações de Estoque',
+        'relatorios': 'Relatórios',
+        'configuracoes': 'Configurações'
+    };
+    
+    document.getElementById('page-title').textContent = titleMap[pageId] || 'Dashboard';
+}
+
+// Atualizar breadcrumb
+function updateBreadcrumb(pageId) {
+    const breadcrumbMap = {
+        'dashboard': ['Home', 'Dashboard'],
+        'cadastro-produtos': ['Home', 'Produtos', 'Cadastro'],
+        'lista-produtos': ['Home', 'Produtos', 'Lista'],
+        'movimentacoes': ['Home', 'Movimentações'],
+        'relatorios': ['Home', 'Relatórios'],
+        'configuracoes': ['Home', 'Configurações']
+    };
+    
+    const breadcrumbItems = breadcrumbMap[pageId] || ['Home', 'Dashboard'];
+    const breadcrumb = document.querySelector('.breadcrumb');
+    breadcrumb.innerHTML = '';
+    
+    breadcrumbItems.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = index === breadcrumbItems.length - 1 ? 
+            'breadcrumb-item active' : 'breadcrumb-item';
+        
+        if (index === breadcrumbItems.length - 1) {
+            li.setAttribute('aria-current', 'page');
+            li.textContent = item;
+        } else {
+            const a = document.createElement('a');
+            a.href = '#';
+            a.textContent = item;
+            li.appendChild(a);
+        }
+        
+        breadcrumb.appendChild(li);
+    });
+}
+
+// Configuração dos formulários
+function setupForms() {
+    // Formulário de cadastro de produto
+    document.getElementById('form-produto').addEventListener('submit', function(e) {
+        e.preventDefault();
+        cadastrarProduto();
+    });
+    
+    // Botão Limpar Campos
+    document.getElementById('limpar-campos').addEventListener('click', function() {
+        document.getElementById('form-produto').reset();
+        document.getElementById('codigo').value = 'PROD' + nextProdutoId.toString().padStart(4, '0');
+    });
+    
+    // Formulário de movimentação
+    document.getElementById('form-movimentacao').addEventListener('submit', function(e) {
+        e.preventDefault();
+        registrarMovimentacao();
+    });
+    
+    // Filtros da lista de produtos
+    document.getElementById('buscar-produto').addEventListener('input', filtrarProdutos);
+    document.getElementById('filtro-categoria').addEventListener('change', filtrarProdutos);
+    document.getElementById('filtro-status').addEventListener('change', filtrarProdutos);
+    
+    // Filtros de movimentações
+    document.getElementById('filtro-data-inicio').addEventListener('change', filtrarMovimentacoes);
+    document.getElementById('filtro-data-fim').addEventListener('change', filtrarMovimentacoes);
+    document.getElementById('filtro-tipo-mov').addEventListener('change', filtrarMovimentacoes);
+    
+    // Gerar relatório
+    document.getElementById('gerar-relatorio').addEventListener('click', gerarRelatorio);
+}
+
+// Configuração das funcionalidades
+function setupFeatures() {
+    // Botão Gerar PDF (produto)
+    document.getElementById('gerar-pdf').addEventListener('click', function() {
+        showToast('PDF gerado com sucesso!', 'success');
+    });
+    
+    // Botão Exportar Excel
+    document.getElementById('exportar-excel').addEventListener('click', function() {
+        showToast('Planilha exportada com sucesso!', 'success');
+    });
+    
+    // Botões de relatório
+    document.getElementById('exportar-pdf').addEventListener('click', function() {
+        showToast('Relatório PDF gerado com sucesso!', 'success');
+    });
+    
+    document.getElementById('exportar-csv').addEventListener('click', function() {
+        showToast('Arquivo CSV exportado com sucesso!', 'success');
+    });
+    
+    // Backup e restauração
+    document.getElementById('exportar-dados').addEventListener('click', exportarDados);
+    document.getElementById('importar-dados').addEventListener('click', function() {
+        document.getElementById('arquivo-backup').click();
+    });
+    
+    document.getElementById('arquivo-backup').addEventListener('change', importarDados);
+}
+
+// Funções de gerenciamento de produtos
+function cadastrarProduto() {
+    const form = document.getElementById('form-produto');
+    
+    // Validação básica
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    // Coletar dados do formulário
+    const produto = {
+        id: nextProdutoId++,
+        codigo: document.getElementById('codigo').value,
+        nome: document.getElementById('nome').value,
+        quantidade: parseInt(document.getElementById('quantidade').value),
+        tipo: document.getElementById('tipo').value,
+        lote: document.getElementById('lote').value,
+        fabricacao: document.getElementById('fabricacao').value,
+        movimento: document.getElementById('movimento').value,
+        status: calcularStatusProduto(document.getElementById('fabricacao').value)
+    };
+    
+    // Adicionar à lista
+    produtos.push(produto);
+    
+    // Salvar no localStorage
+    saveToLocalStorage();
+    
+    // Feedback ao usuário
+    showToast('Produto cadastrado com sucesso!', 'success');
+    
+    // Limpar formulário
+    form.reset();
+    document.getElementById('codigo').value = 'PROD' + nextProdutoId.toString().padStart(4, '0');
+}
+
+function calcularStatusProduto(dataFabricacao) {
+    const fabricacao = new Date(dataFabricacao);
+    const validade = new Date(fabricacao);
+    validade.setFullYear(validade.getFullYear() + 4); // Validade de 4 anos
+    
+    const hoje = new Date();
+    const umAnoAntes = new Date(validade);
+    umAnoAntes.setFullYear(umAnoAntes.getFullYear() - 1);
+    
+    if (hoje > validade) {
+        return 'Fora de Estoque';
+    } else if (hoje > umAnoAntes) {
+        return 'Vencimento próximo';
+    } else {
+        return 'Em Estoque';
+    }
+}
+
+function filtrarProdutos() {
+    // Implementar filtragem em tempo real
+    const termo = document.getElementById('buscar-produto').value.toLowerCase();
+    const categoria = document.getElementById('filtro-categoria').value;
+    const status = document.getElementById('filtro-status').value;
+    
+    // Aqui seria feita a filtragem na tabela
+    console.log('Filtrando produtos:', {termo, categoria, status});
+}
+
+// Funções de movimentação de estoque
+function registrarMovimentacao() {
+    const form = document.getElementById('form-movimentacao');
+    
+    // Validação básica
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    // Coletar dados do formulário
+    const movimentacao = {
+        id: movimentacoes.length + 1,
+        data: document.getElementById('data-mov').value,
+        produto: document.getElementById('produto-mov').value,
+        tipo: document.getElementById('tipo-mov').value,
+        quantidade: parseInt(document.getElementById('quantidade-mov').value),
+        motivo: document.getElementById('motivo-mov').value,
+        usuario: 'João Silva' // Simulado
+    };
+    
+    // Adicionar à lista
+    movimentacoes.push(movimentacao);
+    
+    // Atualizar estoque do produto
+    atualizarEstoqueProduto(movimentacao);
+    
+    // Salvar no localStorage
+    saveToLocalStorage();
+    
+    // Feedback ao usuário
+    showToast('Movimentação registrada com sucesso!', 'success');
+    
+    // Limpar formulário
+    form.reset();
+    document.getElementById('data-mov').value = getCurrentDateTime();
+}
+
+function atualizarEstoqueProduto(movimentacao) {
+    // Encontrar produto
+    const produto = produtos.find(p => p.nome === movimentacao.produto);
+    
+    if (produto) {
+        if (movimentacao.tipo === 'Entrada') {
+            produto.quantidade += movimentacao.quantidade;
+        } else if (movimentacao.tipo === 'Saída') {
+            // Validar se há estoque suficiente
+            if (produto.quantidade >= movimentacao.quantidade) {
+                produto.quantidade -= movimentacao.quantidade;
+            } else {
+                showToast('Estoque insuficiente para esta saída!', 'danger');
+                return false;
+            }
+        }
+        
+        // Atualizar status do produto
+        produto.status = calcularStatusProduto(produto.fabricacao);
+        
+        return true;
+    }
+    
+    return false;
+}
+
+function filtrarMovimentacoes() {
+    // Implementar filtragem de movimentações
+    const dataInicio = document.getElementById('filtro-data-inicio').value;
+    const dataFim = document.getElementById('filtro-data-fim').value;
+    const tipo = document.getElementById('filtro-tipo-mov').value;
+    
+    console.log('Filtrando movimentações:', {dataInicio, dataFim, tipo});
+}
+
+// Funções de relatório
+function gerarRelatorio() {
+    const dataInicio = document.getElementById('data-inicio').value;
+    const dataFim = document.getElementById('data-fim').value;
+    const tipo = document.getElementById('tipo-relatorio').value;
+    
+    // Aqui seria gerado o relatório com base nos filtros
+    console.log('Gerando relatório:', {dataInicio, dataFim, tipo});
+    
+    showToast('Relatório gerado com sucesso!', 'success');
+}
+
+// Funções de backup e restauração
+function exportarDados() {
+    const dados = {
+        produtos: produtos,
+        movimentacoes: movimentacoes,
+        nextProdutoId: nextProdutoId,
+        exportDate: new Date().toISOString()
+    };
+    
+    const dadosStr = JSON.stringify(dados, null, 2);
+    const blob = new Blob([dadosStr], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `backup-estoque-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('Dados exportados com sucesso!', 'success');
+}
+
+function importarDados(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const dados = JSON.parse(e.target.result);
+            
+            // Validar estrutura dos dados
+            if (!dados.produtos || !dados.movimentacoes || !dados.nextProdutoId) {
+                throw new Error('Estrutura de dados inválida');
+            }
+            
+            // Confirmar substituição
+            if (confirm('Isso substituirá todos os dados atuais. Continuar?')) {
+                produtos = dados.produtos;
+                movimentacoes = dados.movimentacoes;
+                nextProdutoId = dados.nextProdutoId;
+                
+                saveToLocalStorage();
+                showToast('Dados importados com sucesso!', 'success');
+            }
+        } catch (error) {
+            console.error('Erro ao importar dados:', error);
+            showToast('Erro ao importar dados. Arquivo inválido.', 'danger');
+        }
+    };
+    reader.readAsText(file);
+    
+    // Limpar input
+    e.target.value = '';
+}
+
+// Funções utilitárias
+function getCurrentDateTime() {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 16);
+}
+
+function showToast(message, type = 'info') {
+    // Criar elemento toast
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Inicializar e mostrar toast
+    const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+    bsToast.show();
+    
+    // Remover após esconder
+    toast.addEventListener('hidden.bs.toast', function() {
+        document.body.removeChild(toast);
+    });
+}
+
+// LocalStorage functions
+function saveToLocalStorage() {
+    const data = {
+        produtos: produtos,
+        movimentacoes: movimentacoes,
+        nextProdutoId: nextProdutoId,
+        lastSave: new Date().toISOString()
+    };
+    
+    localStorage.setItem('estoqueProData', JSON.stringify(data));
+}
+
+function loadFromLocalStorage() {
+    const savedData = localStorage.getItem('estoqueProData');
+    
+    if (savedData) {
+        try {
+            const data = JSON.parse(savedData);
+            produtos = data.produtos || [];
+            movimentacoes = data.movimentacoes || [];
+            nextProdutoId = data.nextProdutoId || 1;
+        } catch (error) {
+            console.error('Erro ao carregar dados do localStorage:', error);
+        }
+    }
+}
+
+// Backup automático a cada 5 minutos
+setInterval(saveToLocalStorage, 5 * 60 * 1000);
