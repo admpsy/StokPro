@@ -3,548 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Controle de Estoque - EstoquePro</title>
+    <title>Sistema de Controle de Estoque</title>
     
     <!-- Bootstrap 5.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Google Fonts: Roboto -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <style>
-        :root {
-            --primary-color: #3498db;
-            --secondary-color: #2c3e50;
-            --success-color: #27ae60;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --info-color: #17a2b8;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f5f5;
-            overflow-x: hidden;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 250px;
-            background-color: var(--secondary-color);
-            color: white;
-            transition: all 0.3s;
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            background-color: var(--primary-color);
-            position: sticky;
-            top: 0;
-            z-index: 1001;
-        }
-
-        .sidebar-header h3 {
-            margin: 0;
-            font-weight: 700;
-        }
-
-        .sidebar ul.components {
-            padding: 20px 0;
-        }
-
-        .sidebar ul li a {
-            padding: 15px 20px;
-            display: block;
-            color: #adb5bd;
-            text-decoration: none;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-        }
-
-        .sidebar ul li a:hover {
-            color: white;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-left-color: var(--primary-color);
-        }
-
-        .sidebar ul li.active > a {
-            color: white;
-            background-color: var(--primary-color);
-        }
-
-        .sidebar ul ul a {
-            padding-left: 40px;
-            font-size: 0.9em;
-        }
-
-        /* Header Styles */
-        .header {
-            background-color: white;
-            padding: 15px 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-left: 250px;
-            transition: all 0.3s;
-            position: sticky;
-            top: 0;
-            z-index: 999;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            margin-left: 250px;
-            padding: 20px;
-            transition: all 0.3s;
-            min-height: calc(100vh - 120px);
-        }
-
-        .page-section {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Footer Styles */
-        .footer {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 15px 0;
-            margin-left: 250px;
-            transition: all 0.3s;
-        }
-
-        /* Card Styles */
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-            margin-bottom: 20px;
-        }
-
-        .card:hover {
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .stat-card {
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .stat-card .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .stat-icon {
-            font-size: 2.5rem;
-            opacity: 0.7;
-        }
-
-        /* Table Styles */
-        .table {
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            font-weight: 500;
-        }
-
-        .table tbody tr:hover {
-            background-color: rgba(52, 152, 219, 0.05);
-        }
-
-        /* Badge Styles */
-        .badge {
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-weight: 500;
-        }
-
-        /* Button Styles */
-        .btn {
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: #2980b9;
-            border-color: #2980b9;
-            transform: translateY(-1px);
-        }
-
-        .btn-success {
-            background-color: var(--success-color);
-            border-color: var(--success-color);
-        }
-
-        .btn-danger {
-            background-color: var(--danger-color);
-            border-color: var(--danger-color);
-        }
-
-        .btn-warning {
-            background-color: var(--warning-color);
-            border-color: var(--warning-color);
-            color: white;
-        }
-
-        /* Form Styles */
-        .form-control, .form-select {
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            padding: 10px 15px;
-            transition: all 0.3s;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                margin-left: -100%;
-                z-index: 1002;
-            }
-            
-            .sidebar.active {
-                margin-left: 0;
-            }
-            
-            .header, .main-content, .footer {
-                margin-left: 0;
-            }
-            
-            .main-content {
-                padding: 10px;
-            }
-            
-            .table-responsive {
-                font-size: 0.85rem;
-            }
-            
-            .btn-group .btn {
-                font-size: 0.8rem;
-                padding: 5px 8px;
-            }
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1055;
-        }
-
-        /* Loading States */
-        .btn-loading {
-            position: relative;
-            pointer-events: none;
-        }
-
-        .btn-loading:after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin-top: -9px;
-            margin-left: -9px;
-            width: 18px;
-            height: 18px;
-            border: 2px solid transparent;
-            border-top-color: currentColor;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Mobile Menu Button */
-        #sidebarCollapse {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        /* Product Image Preview */
-        .image-preview {
-            max-width: 200px;
-            max-height: 200px;
-            margin-top: 10px;
-            display: none;
-            border-radius: 5px;
-        }
-
-        /* Print Styles */
-        @media print {
-            .sidebar, .header, .footer, .btn {
-                display: none !important;
-            }
-            
-            .main-content {
-                margin-left: 0 !important;
-                padding: 0 !important;
-            }
-            
-            .card {
-                box-shadow: none !important;
-                border: 1px solid #ddd !important;
-            }
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
-    <!-- Sidebar de navegação -->
+    <!-- Sidebar -->
     <nav id="sidebar" class="sidebar">
         <div class="sidebar-header">
-            <h3 class="logo"><i class="fas fa-boxes me-2"></i>EstoquePro</h3>
+            <h3><i class="fas fa-boxes me-2"></i> EstoquePro</h3>
             <button id="sidebarCollapse" class="btn d-md-none">
-                <i class="fas fa-times"></i>
+                <i class="fas fa-bars"></i>
             </button>
         </div>
         
         <ul class="list-unstyled components">
             <li>
-                <a href="#dashboard" class="nav-link active">
-                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                <a href="#produtos" id="nav-produtos">
+                    <i class="fas fa-box me-2"></i> Produtos
                 </a>
             </li>
             <li>
-                <a href="#produtos-submenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    <i class="fas fa-box me-2"></i>Produtos
-                </a>
-                <ul class="collapse list-unstyled" id="produtos-submenu">
-                    <li><a href="#cadastro-produtos" class="nav-link">Cadastro</a></li>
-                    <li><a href="#lista-produtos" class="nav-link">Lista de Produtos</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#movimentacoes" class="nav-link">
-                    <i class="fas fa-exchange-alt me-2"></i>Movimentações
+                <a href="#estoque" id="nav-estoque">
+                    <i class="fas fa-warehouse me-2"></i> Estoque
                 </a>
             </li>
             <li>
-                <a href="#relatorios" class="nav-link">
-                    <i class="fas fa-chart-bar me-2"></i>Relatórios
+                <a href="#movimentacoes" id="nav-movimentacoes">
+                    <i class="fas fa-exchange-alt me-2"></i> Movimentações
                 </a>
             </li>
             <li>
-                <a href="#configuracoes" class="nav-link">
-                    <i class="fas fa-cog me-2"></i>Configurações
+                <a href="#relatorios" id="nav-relatorios">
+                    <i class="fas fa-chart-bar me-2"></i> Relatórios
+                </a>
+            </li>
+            <li>
+                <a href="#configuracoes" id="nav-configuracoes">
+                    <i class="fas fa-cog me-2"></i> Configurações
                 </a>
             </li>
         </ul>
         
-        <div class="sidebar-footer p-3">
-            <div class="card bg-dark text-white">
-                <div class="card-body text-center py-2">
-                    <small>Sistema de Controle de Estoque v1.0</small>
-                </div>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=3498db&color=fff" alt="Usuário" class="user-avatar">
+                <span class="user-name">Admin</span>
             </div>
+            <button id="logout" class="btn btn-sm btn-outline-light">
+                <i class="fas fa-sign-out-alt me-1"></i> Sair
+            </button>
         </div>
     </nav>
 
-    <!-- Header superior -->
-    <header class="header">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-6 col-md-6">
-                    <button id="mobileMenuToggle" class="btn d-md-none me-2">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h2 id="page-title" class="mb-0 d-inline-block">Dashboard</h2>
-                    <nav aria-label="breadcrumb" class="d-none d-md-block">
-                        <ol class="breadcrumb mb-0 mt-1">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-                        </ol>
-                    </nav>
-                </div>
-                <div class="col-6 col-md-6 text-end">
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle me-1"></i>João Silva
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Perfil</a></li>
-                            <li><a class="dropdown-item" href="#configuracoes"><i class="fas fa-cog me-2"></i>Configurações</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
-                        </ul>
-                    </div>
+    <!-- Main Content -->
+    <div id="content" class="content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <h4 id="page-title">Dashboard</h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" id="breadcrumb">
+                        <li class="breadcrumb-item active">Início</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="header-actions">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=3498db&color=fff" alt="Usuário" class="avatar">
+                    <span class="user-name">Administrador</span>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main content area -->
-    <main class="main-content">
-        <div class="container-fluid">
-            <!-- Toast Container -->
-            <div class="toast-container"></div>
-
+        <!-- Main Area -->
+        <main class="main-content">
             <!-- Dashboard -->
             <div id="dashboard" class="page-section">
-                <div class="row mb-4">
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="card stat-card h-100">
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="card stat-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <h5 class="card-title">Total Produtos</h5>
-                                        <h2 class="stat-number" id="total-produtos">0</h2>
+                                        <h5 class="card-title">Produtos</h5>
+                                        <h2 id="total-produtos" class="stat-number">0</h2>
                                     </div>
-                                    <div class="stat-icon text-primary">
-                                        <i class="fas fa-boxes"></i>
+                                    <div class="stat-icon">
+                                        <i class="fas fa-box"></i>
                                     </div>
                                 </div>
-                                <p class="card-text text-success"><small><i class="fas fa-arrow-up me-1"></i> <span id="variacao-produtos">0%</span> desde o último mês</small></p>
+                                <p class="card-text">Total de produtos cadastrados</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="card stat-card h-100">
+                    <div class="col-md-3 mb-4">
+                        <div class="card stat-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <h5 class="card-title">Estoque Baixo</h5>
-                                        <h2 class="stat-number text-warning" id="estoque-baixo">0</h2>
+                                        <h5 class="card-title">Em Estoque</h5>
+                                        <h2 id="total-estoque" class="stat-number">0</h2>
                                     </div>
-                                    <div class="stat-icon text-warning">
-                                        <i class="fas fa-exclamation-triangle"></i>
+                                    <div class="stat-icon">
+                                        <i class="fas fa-warehouse"></i>
                                     </div>
                                 </div>
-                                <p class="card-text text-warning"><small>Produtos com estoque crítico</small></p>
+                                <p class="card-text">Itens disponíveis</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="card stat-card h-100">
+                    <div class="col-md-3 mb-4">
+                        <div class="card stat-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <div>
                                         <h5 class="card-title">Vencimento Próximo</h5>
-                                        <h2 class="stat-number text-danger" id="vencimento-proximo">0</h2>
+                                        <h2 id="total-vencimento" class="stat-number">0</h2>
                                     </div>
-                                    <div class="stat-icon text-danger">
-                                        <i class="fas fa-calendar-times"></i>
+                                    <div class="stat-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
                                     </div>
                                 </div>
-                                <p class="card-text text-danger"><small>Produtos próximos ao vencimento</small></p>
+                                <p class="card-text">Itens com vencimento próximo</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="card stat-card h-100">
+                    <div class="col-md-3 mb-4">
+                        <div class="card stat-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <h5 class="card-title">Valor Total</h5>
-                                        <h2 class="stat-number" id="valor-total">R$ 0,00</h2>
+                                        <h5 class="card-title">Vencidos</h5>
+                                        <h2 id="total-vencidos" class="stat-number">0</h2>
                                     </div>
-                                    <div class="stat-icon text-info">
-                                        <i class="fas fa-dollar-sign"></i>
+                                    <div class="stat-icon">
+                                        <i class="fas fa-times-circle"></i>
                                     </div>
                                 </div>
-                                <p class="card-text text-success"><small><i class="fas fa-arrow-up me-1"></i> <span id="variacao-valor">0%</span> desde o último mês</small></p>
+                                <p class="card-text">Itens vencidos</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Gráficos -->
                 <div class="row">
-                    <div class="col-lg-8 mb-4">
-                        <div class="card h-100">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Movimentações do Estoque (Últimos 30 dias)</h5>
-                                <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-outline-primary active" data-period="30">30 dias</button>
-                                    <button class="btn btn-outline-primary" data-period="7">7 dias</button>
-                                    <button class="btn btn-outline-primary" data-period="90">90 dias</button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="movimentacoesChart" height="250"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 mb-4">
-                        <div class="card h-100">
-                            <div class="card-header">
-                                <h5 class="mb-0">Status do Estoque</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="statusEstoqueChart" height="250"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Produtos com estoque baixo -->
-                <div class="row">
-                    <div class="col-12">
+                    <div class="col-md-8">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-exclamation-triangle text-warning me-2"></i>Produtos com Estoque Baixo</h5>
+                                <h5>Movimentações Recentes</h5>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="tabela-estoque-baixo">
+                                    <table class="table table-hover" id="tabela-movimentacoes">
                                         <thead>
                                             <tr>
+                                                <th>Data</th>
                                                 <th>Produto</th>
-                                                <th>Estoque Atual</th>
-                                                <th>Estoque Mínimo</th>
-                                                <th>Status</th>
-                                                <th>Ação</th>
+                                                <th>Tipo</th>
+                                                <th>Quantidade</th>
+                                                <th>Lote</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- Dados serão preenchidos via JavaScript -->
+                                            <!-- Dados carregados via JavaScript -->
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Status do Estoque</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="estoque-chart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -552,316 +200,271 @@
             </div>
 
             <!-- Cadastro de Produtos -->
-            <div id="cadastro-produtos" class="page-section">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h4 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Cadastro de Produtos</h4>
-                                <button class="btn btn-sm btn-outline-secondary" id="btn-voltar-lista">
-                                    <i class="fas fa-arrow-left me-1"></i> Voltar para Lista
-                                </button>
-                            </div>
-                            <div class="card-body">
-                                <form id="form-produto">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="codigo" class="form-label">Código do Produto</label>
-                                                <input type="text" class="form-control" id="codigo" readonly>
-                                                <div class="form-text">Código gerado automaticamente</div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="nome" class="form-label">Nome do Produto <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" id="nome" required placeholder="Digite o nome do produto">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="categoria" class="form-label">Categoria</label>
-                                                <select class="form-select" id="categoria">
-                                                    <option value="">Selecione uma categoria</option>
-                                                    <option value="Eletrônicos">Eletrônicos</option>
-                                                    <option value="Informática">Informática</option>
-                                                    <option value="Móveis">Móveis</option>
-                                                    <option value="Material de Escritório">Material de Escritório</option>
-                                                    <option value="Outros">Outros</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="quantidade" class="form-label">Quantidade <span class="text-danger">*</span></label>
-                                                <input type="number" class="form-control" id="quantidade" min="0" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="estoque-minimo" class="form-label">Estoque Mínimo</label>
-                                                <input type="number" class="form-control" id="estoque-minimo" min="0" value="5">
-                                                <div class="form-text">Alerta será acionado quando o estoque chegar a este valor</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="tipo" class="form-label">Tipo de Embalagem <span class="text-danger">*</span></label>
-                                                <select class="form-select" id="tipo" required>
-                                                    <option value="">Selecione o tipo</option>
-                                                    <option value="Tambor">Tambor</option>
-                                                    <option value="Bombona">Bombona</option>
-                                                    <option value="Balde">Balde</option>
-                                                    <option value="IBC1000L">IBC 1000L</option>
-                                                    <option value="Caixa">Caixa</option>
-                                                    <option value="Saco">Saco</option>
-                                                    <option value="Fardo">Fardo</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="lote" class="form-label">Número do Lote</label>
-                                                <input type="text" class="form-control" id="lote" placeholder="Digite o número do lote">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="fabricacao" class="form-label">Data de Fabricação</label>
-                                                <input type="date" class="form-control" id="fabricacao">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="validade" class="form-label">Data de Validade</label>
-                                                <input type="date" class="form-control" id="validade">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="fornecedor" class="form-label">Fornecedor</label>
-                                                <select class="form-select" id="fornecedor">
-                                                    <option value="">Selecione um fornecedor</option>
-                                                    <option value="Fornecedor A">Fornecedor A</option>
-                                                    <option value="Fornecedor B">Fornecedor B</option>
-                                                    <option value="Fornecedor C">Fornecedor C</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="mb-3">
-                                                <label for="descricao" class="form-label">Descrição do Produto</label>
-                                                <textarea class="form-control" id="descricao" rows="3" placeholder="Digite uma descrição para o produto"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="foto" class="form-label">Foto do Produto</label>
-                                                <input type="file" class="form-control" id="foto" accept="image/*">
-                                                <img id="image-preview" class="image-preview mt-2" src="" alt="Preview">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="preco" class="form-label">Preço Unitário (R$)</label>
-                                                <input type="number" class="form-control" id="preco" min="0" step="0.01" placeholder="0,00">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col-12">
-                                            <button type="submit" class="btn btn-primary me-2" id="btn-salvar">
-                                                <i class="fas fa-save me-1"></i> Salvar Produto
-                                            </button>
-                                            <button type="button" class="btn btn-secondary me-2" id="limpar-campos">
-                                                <i class="fas fa-broom me-1"></i> Limpar Campos
-                                            </button>
-                                            <button type="button" class="btn btn-success" id="gerar-pdf">
-                                                <i class="fas fa-file-pdf me-1"></i> Gerar PDF
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+            <div id="produtos" class="page-section d-none">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>Cadastro de Produtos</h5>
+                        <button class="btn btn-secondary" id="limpar-campos">
+                            <i class="fas fa-broom me-1"></i> Limpar Campos
+                        </button>
                     </div>
-                </div>
-            </div>
-
-            <!-- Lista de Produtos/Estoque -->
-            <div id="lista-produtos" class="page-section">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
-                                <h4 class="mb-0"><i class="fas fa-boxes me-2"></i>Estoque de Produtos</h4>
-                                <div>
-                                    <button class="btn btn-primary me-2" id="novo-produto">
-                                        <i class="fas fa-plus me-1"></i> Novo Produto
-                                    </button>
-                                    <button class="btn btn-success" id="exportar-excel">
-                                        <i class="fas fa-file-excel me-1"></i> Exportar
-                                    </button>
+                    <div class="card-body">
+                        <form id="form-produto">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="sku" class="form-label">SKU</label>
+                                    <input type="text" class="form-control" id="sku" readonly>
+                                    <small class="form-text text-muted">Código gerado automaticamente</small>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-md-4 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                            <input type="text" class="form-control" placeholder="Buscar produto..." id="buscar-produto">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-2">
-                                        <select class="form-select" id="filtro-categoria">
-                                            <option value="">Todas as categorias</option>
-                                            <option value="Eletrônicos">Eletrônicos</option>
-                                            <option value="Informática">Informática</option>
-                                            <option value="Móveis">Móveis</option>
-                                            <option value="Material de Escritório">Material de Escritório</option>
-                                            <option value="Outros">Outros</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3 mb-2">
-                                        <select class="form-select" id="filtro-status">
-                                            <option value="">Todos os status</option>
-                                            <option value="Em Estoque">Em Estoque</option>
-                                            <option value="Estoque Baixo">Estoque Baixo</option>
-                                            <option value="Vencimento próximo">Vencimento próximo</option>
-                                            <option value="Fora de Estoque">Fora de Estoque</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2 mb-2">
-                                        <button class="btn btn-outline-secondary w-100" id="limpar-filtros">
-                                            <i class="fas fa-times me-1"></i> Limpar
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover" id="tabela-produtos">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Produto</th>
-                                                <th>Categoria</th>
-                                                <th>Quantidade</th>
-                                                <th>Tipo</th>
-                                                <th>Validade</th>
-                                                <th>Status</th>
-                                                <th>Ações</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Dados serão preenchidos via JavaScript -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                                
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <div class="text-muted" id="info-paginacao">
-                                        Mostrando 0 de 0 registros
-                                    </div>
-                                    <nav aria-label="Navegação de páginas">
-                                        <ul class="pagination justify-content-center mb-0" id="paginacao">
-                                            <!-- Paginação será gerada via JavaScript -->
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Movimentações de Estoque -->
-            <div id="movimentacoes" class="page-section">
-                <div class="row">
-                    <div class="col-lg-4 mb-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>Registro de Movimentações</h5>
-                            </div>
-                            <div class="card-body">
-                                <form id="form-movimentacao">
-                                    <div class="mb-3">
-                                        <label for="produto-mov" class="form-label">Produto <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="produto-mov" required>
-                                            <option value="">Selecione um produto</option>
-                                            <!-- Opções serão preenchidas via JavaScript -->
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="tipo-mov" class="form-label">Tipo de Movimentação <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="tipo-mov" required>
-                                            <option value="">Selecione o tipo</option>
-                                            <option value="Entrada">Entrada</option>
-                                            <option value="Saída">Saída</option>
-                                            <option value="Ajuste">Ajuste de Estoque</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="quantidade-mov" class="form-label">Quantidade <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="quantidade-mov" min="1" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="motivo-mov" class="form-label">Motivo <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="motivo-mov" required>
-                                            <option value="">Selecione o motivo</option>
-                                            <option value="Compra">Compra</option>
-                                            <option value="Venda">Venda</option>
-                                            <option value="Ajuste">Ajuste</option>
-                                            <option value="Devolução">Devolução</option>
-                                            <option value="Perda">Perda</option>
-                                            <option value="Doação">Doação</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="data-mov" class="form-label">Data/Hora</label>
-                                        <input type="datetime-local" class="form-control" id="data-mov" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="observacao-mov" class="form-label">Observações</label>
-                                        <textarea class="form-control" id="observacao-mov" rows="2" placeholder="Observações adicionais"></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary w-100" id="btn-registrar-mov">
-                                        <i class="fas fa-exchange-alt me-1"></i> Registrar Movimentação
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-8 mb-4">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
-                                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Histórico de Movimentações</h5>
-                                <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
-                                    <input type="date" class="form-control" id="filtro-data-inicio" style="width: 150px;">
-                                    <input type="date" class="form-control" id="filtro-data-fim" style="width: 150px;">
-                                    <select class="form-select" id="filtro-tipo-mov" style="width: 150px;">
-                                        <option value="">Todos os tipos</option>
-                                        <option value="Entrada">Entrada</option>
-                                        <option value="Saída">Saída</option>
-                                        <option value="Ajuste">Ajuste</option>
+                                <div class="col-md-6 mb-3">
+                                    <label for="nome-produto" class="form-label">Nome do Produto *</label>
+                                    <select class="form-select" id="nome-produto" required>
+                                        <option value="">Selecione um produto</option>
+                                        <!-- Opções carregadas via JavaScript -->
                                     </select>
                                 </div>
                             </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover" id="tabela-movimentacoes">
-                                        <thead>
-                                            <tr>
-                                                <th>Data/Hora</th>
-                                                <th>Produto</th>
-                                                <th>Tipo</th>
-                                                <th>Quantidade</th>
-                                                <th>Motivo</th>
-                                                <th>Usuário</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Dados serão preenchidos via JavaScript -->
-                                        </tbody>
-                                    </table>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="quantidade" class="form-label">Quantidade *</label>
+                                    <input type="number" class="form-control" id="quantidade" min="1" required>
                                 </div>
-                                
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <div class="text-muted" id="info-paginacao-mov">
-                                        Mostrando 0 de 0 registros
+                                <div class="col-md-4 mb-3">
+                                    <label for="tipo-embalagem" class="form-label">Tipo de Embalagem *</label>
+                                    <select class="form-select" id="tipo-embalagem" required>
+                                        <option value="">Selecione</option>
+                                        <option value="Tambor">Tambor</option>
+                                        <option value="Bombona">Bombona</option>
+                                        <option value="Balde">Balde</option>
+                                        <option value="IBC1000L">IBC 1000L</option>
+                                        <option value="Caixa">Caixa</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="lote" class="form-label">Lote</label>
+                                    <select class="form-select" id="lote">
+                                        <option value="">Selecione um lote</option>
+                                        <!-- Opções carregadas via JavaScript -->
+                                    </select>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mt-1" id="novo-lote">Novo Lote</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="data-fabricacao" class="form-label">Data de Fabricação</label>
+                                    <input type="date" class="form-control" id="data-fabricacao">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="tipo-movimento" class="form-label">Tipo de Movimento *</label>
+                                    <select class="form-select" id="tipo-movimento" required>
+                                        <option value="">Selecione</option>
+                                        <option value="Entrada">Entrada</option>
+                                        <option value="Saída">Saída</option>
+                                        <option value="Devolução">Devolução</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="foto" class="form-label">Foto do Produto</label>
+                                    <input type="file" class="form-control" id="foto" accept="image/*">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-primary" id="adicionar-lista">
+                                    <i class="fas fa-plus me-1"></i> Adicionar à Lista
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="mt-4">
+                            <h6>Itens para Cadastro</h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="tabela-itens">
+                                    <thead>
+                                        <tr>
+                                            <th>SKU</th>
+                                            <th>Produto</th>
+                                            <th>Quantidade</th>
+                                            <th>Tipo</th>
+                                            <th>Lote</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Itens adicionados aparecerão aqui -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-flex justify-content-between mt-3">
+                                <button class="btn btn-success" id="salvar-produtos">
+                                    <i class="fas fa-save me-1"></i> Salvar Produtos
+                                </button>
+                                <button class="btn btn-danger" id="gerar-pdf">
+                                    <i class="fas fa-file-pdf me-1"></i> Gerar PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estoque de Produtos -->
+            <div id="estoque" class="page-section d-none">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>Estoque de Produtos</h5>
+                        <div>
+                            <button class="btn btn-primary me-2" id="novo-produto">
+                                <i class="fas fa-plus me-1"></i> Novo Produto
+                            </button>
+                            <button class="btn btn-success" id="exportar-excel">
+                                <i class="fas fa-file-excel me-1"></i> Exportar Excel
+                            </button>
+                            <button class="btn btn-info" id="importar-excel">
+                                <i class="fas fa-file-import me-1"></i> Importar Excel
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="filtro-estoque" placeholder="Buscar produto...">
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="filtro-categoria">
+                                    <option value="">Todas as categorias</option>
+                                    <option value="Tambor">Tambor</option>
+                                    <option value="Bombona">Bombona</option>
+                                    <option value="Balde">Balde</option>
+                                    <option value="IBC1000L">IBC 1000L</option>
+                                    <option value="Caixa">Caixa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="filtro-status">
+                                    <option value="">Todos os status</option>
+                                    <option value="Em Estoque">Em Estoque</option>
+                                    <option value="Vencimento Próximo">Vencimento Próximo</option>
+                                    <option value="Fora de Estoque">Fora de Estoque</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="tabela-estoque">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>SKU</th>
+                                        <th>Produto</th>
+                                        <th>Tipo</th>
+                                        <th>Quantidade</th>
+                                        <th>Lotes</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dados carregados via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movimentações -->
+            <div id="movimentacoes" class="page-section d-none">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Movimentações de Paletes</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="form-movimentacao-paletes">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="data-movimentacao" class="form-label">Data *</label>
+                                    <input type="date" class="form-control" id="data-movimentacao" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="quantidade-paletes" class="form-label">Quantidade *</label>
+                                    <input type="number" class="form-control" id="quantidade-paletes" min="1" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="tipo-produto-palete" class="form-label">Tipo de Produto *</label>
+                                    <select class="form-select" id="tipo-produto-palete" required>
+                                        <option value="">Selecione</option>
+                                        <option value="Fracionado">Fracionado</option>
+                                        <option value="Tambor">Tambor</option>
+                                        <option value="IBC1000L">IBC 1000L</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="tipo-movimento-palete" class="form-label">Tipo de Movimento *</label>
+                                    <select class="form-select" id="tipo-movimento-palete" required>
+                                        <option value="">Selecione</option>
+                                        <option value="Entrada">Entrada</option>
+                                        <option value="Saída">Saída</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Registrar Movimentação
+                            </button>
+                        </form>
+                        
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5>Histórico de Movimentações</h5>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-secondary me-2" id="filtro-diario">Diário</button>
+                                    <button class="btn btn-sm btn-outline-secondary" id="filtro-mensal">Mensal</button>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="tabela-movimentacoes-paletes">
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Tipo de Produto</th>
+                                            <th>Tipo de Movimento</th>
+                                            <th>Quantidade</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Dados carregados via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h5>Totais por Tipo</h5>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <h6>Fracionado</h6>
+                                                <h3 id="total-fracionado">0</h3>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <nav aria-label="Navegação de páginas">
-                                        <ul class="pagination justify-content-center mb-0" id="paginacao-mov">
-                                            <!-- Paginação será gerada via JavaScript -->
-                                        </ul>
-                                    </nav>
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <h6>Tambor</h6>
+                                                <h3 id="total-tambor">0</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <h6>IBC 1000L</h6>
+                                                <h3 id="total-ibc">0</h3>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -870,102 +473,98 @@
             </div>
 
             <!-- Relatórios -->
-            <div id="relatorios" class="page-section">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Relatórios de Estoque</h4>
+            <div id="relatorios" class="page-section d-none">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>Relatórios de Estoque</h5>
+                        <div>
+                            <button class="btn btn-success me-2" id="gerar-relatorio-pdf">
+                                <i class="fas fa-file-pdf me-1"></i> Gerar PDF
+                            </button>
+                            <button class="btn btn-info" id="exportar-csv">
+                                <i class="fas fa-file-csv me-1"></i> Exportar CSV
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label for="data-inicio" class="form-label">Data Início</label>
+                                <input type="date" class="form-control" id="data-inicio">
                             </div>
-                            <div class="card-body">
-                                <div class="row mb-4">
-                                    <div class="col-md-3 mb-2">
-                                        <label for="data-inicio" class="form-label">Data Início</label>
-                                        <input type="date" class="form-control" id="data-inicio">
-                                    </div>
-                                    <div class="col-md-3 mb-2">
-                                        <label for="data-fim" class="form-label">Data Fim</label>
-                                        <input type="date" class="form-control" id="data-fim">
-                                    </div>
-                                    <div class="col-md-3 mb-2">
-                                        <label for="tipo-relatorio" class="form-label">Tipo de Movimentação</label>
-                                        <select class="form-select" id="tipo-relatorio">
-                                            <option value="">Todos os tipos</option>
-                                            <option value="Entrada">Entrada</option>
-                                            <option value="Saída">Saída</option>
-                                            <option value="Ajuste">Ajuste</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3 mb-2 d-flex align-items-end">
-                                        <button class="btn btn-primary w-100" id="gerar-relatorio">
-                                            <i class="fas fa-chart-bar me-1"></i> Gerar Relatório
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div class="row mb-4">
-                                    <div class="col-md-3 col-sm-6 mb-3">
-                                        <div class="card bg-primary text-white">
-                                            <div class="card-body text-center py-3">
-                                                <h5>Total de Entradas</h5>
-                                                <h3 id="total-entradas">0</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-6 mb-3">
-                                        <div class="card bg-danger text-white">
-                                            <div class="card-body text-center py-3">
-                                                <h5>Total de Saídas</h5>
-                                                <h3 id="total-saidas">0</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-6 mb-3">
-                                        <div class="card bg-success text-white">
-                                            <div class="card-body text-center py-3">
-                                                <h5>Saldo Final</h5>
-                                                <h3 id="saldo-final">0</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-6 mb-3">
-                                        <div class="card bg-info text-white">
-                                            <div class="card-body text-center py-3">
-                                                <h5>Movimentações</h5>
-                                                <h3 id="total-movimentacoes">0</h3>
-                                            </div>
+                            <div class="col-md-3">
+                                <label for="data-fim" class="form-label">Data Fim</label>
+                                <input type="date" class="form-control" id="data-fim">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="filtro-tipo-movimento" class="form-label">Tipo de Movimentação</label>
+                                <select class="form-select" id="filtro-tipo-movimento">
+                                    <option value="">Todos</option>
+                                    <option value="Entrada">Entrada</option>
+                                    <option value="Saída">Saída</option>
+                                    <option value="Devolução">Devolução</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-primary w-100" id="aplicar-filtros">
+                                    <i class="fas fa-filter me-1"></i> Aplicar Filtros
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="tabela-relatorios">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Nº do Relatório</th>
+                                        <th>Data</th>
+                                        <th>Tipo de Movimentação</th>
+                                        <th>Total de Produtos</th>
+                                        <th>Total de Paletes</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dados carregados via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5>Estatísticas</h5>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h6>Total de Entradas</h6>
+                                            <h3 id="total-entradas">0</h3>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover" id="tabela-relatorio">
-                                        <thead>
-                                            <tr>
-                                                <th>Data</th>
-                                                <th>Produto</th>
-                                                <th>Tipo</th>
-                                                <th>Quantidade</th>
-                                                <th>Motivo</th>
-                                                <th>Usuário</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Dados serão preenchidos via JavaScript -->
-                                        </tbody>
-                                    </table>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h6>Total de Saídas</h6>
+                                            <h3 id="total-saidas">0</h3>
+                                        </div>
+                                    </div>
                                 </div>
-                                
-                                <div class="mt-3">
-                                    <button class="btn btn-success me-2 mb-2" id="exportar-pdf">
-                                        <i class="fas fa-file-pdf me-1"></i> Gerar Relatório PDF
-                                    </button>
-                                    <button class="btn btn-success me-2 mb-2" id="exportar-csv">
-                                        <i class="fas fa-file-csv me-1"></i> Exportar para CSV
-                                    </button>
-                                    <button class="btn btn-info mb-2" id="imprimir-relatorio">
-                                        <i class="fas fa-print me-1"></i> Imprimir Relatório
-                                    </button>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h6>Saldo Final</h6>
+                                            <h3 id="saldo-final">0</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h6>Movimentações</h6>
+                                            <h3 id="total-movimentacoes">0</h3>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -974,1742 +573,252 @@
             </div>
 
             <!-- Configurações -->
-            <div id="configuracoes" class="page-section">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="mb-0"><i class="fas fa-cog me-2"></i>Configurações do Sistema</h4>
+            <div id="configuracoes" class="page-section d-none">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Configurações do Sistema</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="configTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios" type="button" role="tab">Usuários</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="backup-tab" data-bs-toggle="tab" data-bs-target="#backup" type="button" role="tab">Backup</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="sistema-tab" data-bs-toggle="tab" data-bs-target="#sistema" type="button" role="tab">Sistema</button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content mt-3" id="configTabsContent">
+                            <div class="tab-pane fade show active" id="usuarios" role="tabpanel">
+                                <h6>Gerenciar Usuários</h6>
+                                <div class="mb-3">
+                                    <button class="btn btn-primary" id="adicionar-usuario">
+                                        <i class="fas fa-plus me-1"></i> Adicionar Usuário
+                                    </button>
+                                </div>
+                                
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="tabela-usuarios">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Usuário</th>
+                                                <th>Chave de Acesso</th>
+                                                <th>Data de Criação</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Dados carregados via JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <div class="card-body">
+                            
+                            <div class="tab-pane fade" id="backup" role="tabpanel">
+                                <h6>Backup e Restauração</h6>
                                 <div class="row">
-                                    <div class="col-md-6 mb-4">
-                                        <h5><i class="fas fa-database me-2"></i>Backup e Restauração</h5>
-                                        <p>Faça backup dos dados do sistema ou restaure a partir de um arquivo anterior.</p>
-                                        <div class="mb-3">
-                                            <button class="btn btn-primary me-2 mb-2" id="exportar-dados">
-                                                <i class="fas fa-download me-1"></i> Exportar Dados
-                                            </button>
-                                            <button class="btn btn-success me-2 mb-2" id="importar-dados">
-                                                <i class="fas fa-upload me-1"></i> Importar Dados
-                                            </button>
-                                            <button class="btn btn-danger mb-2" id="limpar-dados">
-                                                <i class="fas fa-trash me-1"></i> Limpar Dados
-                                            </button>
-                                        </div>
-                                        <input type="file" class="form-control" id="arquivo-backup" accept=".json" style="display: none;">
-                                        <div class="alert alert-info mt-2">
-                                            <small><i class="fas fa-info-circle me-1"></i> O backup é realizado automaticamente a cada 5 minutos.</small>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h6>Exportar Dados</h6>
+                                                <p>Faça backup de todos os dados do sistema.</p>
+                                                <button class="btn btn-success" id="exportar-dados">
+                                                    <i class="fas fa-download me-1"></i> Exportar Dados
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-4">
-                                        <h5><i class="fas fa-bell me-2"></i>Configurações de Notificação</h5>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="notificacao-estoque" checked>
-                                            <label class="form-check-label" for="notificacao-estoque">
-                                                Alertas de estoque baixo
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="notificacao-vencimento" checked>
-                                            <label class="form-check-label" for="notificacao-vencimento">
-                                                Alertas de vencimento próximo
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="notificacao-email">
-                                            <label class="form-check-label" for="notificacao-email">
-                                                Notificações por e-mail
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="backup-automatico" checked>
-                                            <label class="form-check-label" for="backup-automatico">
-                                                Backup automático
-                                            </label>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h6>Importar Dados</h6>
+                                                <p>Restaurar dados a partir de um arquivo de backup.</p>
+                                                <div class="mb-2">
+                                                    <input type="file" class="form-control" id="arquivo-backup" accept=".json">
+                                                </div>
+                                                <button class="btn btn-warning" id="importar-dados">
+                                                    <i class="fas fa-upload me-1"></i> Importar Dados
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-4">
-                                        <h5><i class="fas fa-palette me-2"></i>Configurações de Tema</h5>
-                                        <div class="mb-3">
-                                            <label for="tema" class="form-label">Tema de Cores</label>
-                                            <select class="form-select" id="tema">
-                                                <option value="azul">Azul (Padrão)</option>
-                                                <option value="verde">Verde</option>
-                                                <option value="roxo">Roxo</option>
-                                                <option value="vermelho">Vermelho</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="tema-escuro">
-                                            <label class="form-check-label" for="tema-escuro">
-                                                Modo escuro
-                                            </label>
-                                        </div>
+                            </div>
+                            
+                            <div class="tab-pane fade" id="sistema" role="tabpanel">
+                                <h6>Configurações do Sistema</h6>
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="notificacao-vencimento" class="form-label">Dias para notificação de vencimento</label>
+                                        <input type="number" class="form-control" id="notificacao-vencimento" value="365" min="1">
                                     </div>
-                                    <div class="col-md-6 mb-4">
-                                        <h5><i class="fas fa-info-circle me-2"></i>Informações do Sistema</h5>
-                                        <div class="mb-2"><strong>Versão:</strong> 1.0.0</div>
-                                        <div class="mb-2"><strong>Último Backup:</strong> <span id="ultimo-backup">Nunca</span></div>
-                                        <div class="mb-2"><strong>Total de Produtos:</strong> <span id="info-total-produtos">0</span></div>
-                                        <div class="mb-2"><strong>Total de Movimentações:</strong> <span id="info-total-movimentacoes">0</span></div>
-                                        <div class="mb-2"><strong>Última Atualização:</strong> <span id="ultima-atualizacao">-</span></div>
+                                    <div class="mb-3">
+                                        <label for="auto-backup" class="form-label">Backup automático (dias)</label>
+                                        <input type="number" class="form-control" id="auto-backup" value="7" min="1">
                                     </div>
-                                </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="notificacoes-email">
+                                        <label class="form-check-label" for="notificacoes-email">
+                                            Enviar notificações por e-mail
+                                        </label>
+                                    </div>
+                                    <button type="button" class="btn btn-primary">Salvar Configurações</button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p class="mb-0">Sistema de Controle de Estoque EstoquePro &copy; 2023 - Todos os direitos reservados</p>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container-fluid">
+                <span class="text-muted">EstoquePro &copy; 2023 - Sistema de Controle de Estoque</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal para Novo Produto -->
+    <div class="modal fade" id="modal-produto" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-novo-produto">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="novo-sku" class="form-label">SKU *</label>
+                                <input type="text" class="form-control" id="novo-sku" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="novo-nome" class="form-label">Nome do Produto *</label>
+                                <input type="text" class="form-control" id="novo-nome" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="novo-tipo" class="form-label">Tipo de Embalagem *</label>
+                                <select class="form-select" id="novo-tipo" required>
+                                    <option value="">Selecione</option>
+                                    <option value="Tambor">Tambor</option>
+                                    <option value="Bombona">Bombona</option>
+                                    <option value="Balde">Balde</option>
+                                    <option value="IBC1000L">IBC 1000L</option>
+                                    <option value="Caixa">Caixa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="novo-categoria" class="form-label">Categoria</label>
+                                <input type="text" class="form-control" id="novo-categoria">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="novo-descricao" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="novo-descricao" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="salvar-novo-produto">Salvar</button>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
+
+    <!-- Modal para Novo Lote -->
+    <div class="modal fade" id="modal-lote" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Lote</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-novo-lote">
+                        <div class="mb-3">
+                            <label for="numero-lote" class="form-label">Número do Lote *</label>
+                            <input type="text" class="form-control" id="numero-lote" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantidade-lote" class="form-label">Quantidade *</label>
+                            <input type="number" class="form-control" id="quantidade-lote" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="data-fabricacao-lote" class="form-label">Data de Fabricação *</label>
+                            <input type="date" class="form-control" id="data-fabricacao-lote" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="salvar-novo-lote">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Adicionar Usuário -->
+    <div class="modal fade" id="modal-usuario" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Usuário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-novo-usuario">
+                        <div class="mb-3">
+                            <label for="nome-usuario" class="form-label">Nome Completo *</label>
+                            <input type="text" class="form-control" id="nome-usuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="login-usuario" class="form-label">Usuário *</label>
+                            <input type="text" class="form-control" id="login-usuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="senha-usuario" class="form-label">Senha *</label>
+                            <input type="password" class="form-control" id="senha-usuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmar-senha" class="form-label">Confirmar Senha *</label>
+                            <input type="password" class="form-control" id="confirmar-senha" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="salvar-novo-usuario">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert">
+            <div class="toast-header">
+                <strong class="me-auto">Sistema</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toast-message">
+                Mensagem de notificação
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script>
-        // =============================================
-// SISTEMA DE CONTROLE DE ESTOQUE - ESTOQUEPRO
-// =============================================
-
-// Variáveis globais
-let produtos = [];
-let movimentacoes = [];
-let nextProdutoId = 1;
-let nextMovimentacaoId = 1;
-let currentPage = 1;
-const itemsPerPage = 10;
-let currentFilter = {};
-let temaAtual = 'azul';
-
-// Inicialização do sistema quando o DOM estiver carregado
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Inicializando Sistema EstoquePro...');
-    
-    // Carregar dados salvos
-    carregarDados();
-    
-    // Configurar eventos
-    configurarEventos();
-    
-    // Configurar interface
-    configurarInterface();
-    
-    // Mostrar dashboard inicial
-    mostrarPagina('dashboard');
-    
-    // Configurar gráficos
-    setTimeout(configurarGraficos, 500);
-    
-    // Iniciar backup automático
-    iniciarBackupAutomatico();
-    
-    console.log('Sistema EstoquePro inicializado com sucesso!');
-});
-
-// =============================================
-// FUNÇÕES DE INICIALIZAÇÃO
-// =============================================
-
-function configurarEventos() {
-    // Navegação do menu
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (this.getAttribute('href').startsWith('#')) {
-                e.preventDefault();
-                const pagina = this.getAttribute('href').substring(1);
-                mostrarPagina(pagina);
-            }
-        });
-    });
-    
-    // Menu mobile
-    document.getElementById('mobileMenuToggle').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.toggle('active');
-    });
-    
-    document.getElementById('sidebarCollapse').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.remove('active');
-    });
-    
-    // Fechar sidebar ao clicar em um link no mobile
-    if (window.innerWidth < 768) {
-        document.querySelectorAll('.sidebar a').forEach(link => {
-            link.addEventListener('click', function() {
-                document.getElementById('sidebar').classList.remove('active');
-            });
-        });
-    }
-    
-    // Formulário de produto
-    document.getElementById('form-produto').addEventListener('submit', salvarProduto);
-    document.getElementById('limpar-campos').addEventListener('click', limparFormularioProduto);
-    document.getElementById('btn-voltar-lista').addEventListener('click', function() {
-        mostrarPagina('lista-produtos');
-    });
-    
-    // Formulário de movimentação
-    document.getElementById('form-movimentacao').addEventListener('submit', registrarMovimentacao);
-    
-    // Botões de ação
-    document.getElementById('novo-produto').addEventListener('click', function() {
-        novoProduto();
-        mostrarPagina('cadastro-produtos');
-    });
-    
-    document.getElementById('gerar-pdf').addEventListener('click', gerarPDFProduto);
-    document.getElementById('exportar-excel').addEventListener('click', exportarExcel);
-    document.getElementById('gerar-relatorio').addEventListener('click', gerarRelatorio);
-    document.getElementById('exportar-pdf').addEventListener('click', gerarPDFRelatorio);
-    document.getElementById('exportar-csv').addEventListener('click', exportarCSV);
-    document.getElementById('imprimir-relatorio').addEventListener('click', imprimirRelatorio);
-    
-    // Filtros
-    document.getElementById('buscar-produto').addEventListener('input', filtrarProdutos);
-    document.getElementById('filtro-categoria').addEventListener('change', filtrarProdutos);
-    document.getElementById('filtro-status').addEventListener('change', filtrarProdutos);
-    document.getElementById('limpar-filtros').addEventListener('click', limparFiltros);
-    
-    document.getElementById('filtro-data-inicio').addEventListener('change', filtrarMovimentacoes);
-    document.getElementById('filtro-data-fim').addEventListener('change', filtrarMovimentacoes);
-    document.getElementById('filtro-tipo-mov').addEventListener('change', filtrarMovimentacoes);
-    
-    // Backup e restauração
-    document.getElementById('exportar-dados').addEventListener('click', exportarDados);
-    document.getElementById('importar-dados').addEventListener('click', function() {
-        document.getElementById('arquivo-backup').click();
-    });
-    document.getElementById('arquivo-backup').addEventListener('change', importarDados);
-    document.getElementById('limpar-dados').addEventListener('click', limparDados);
-    
-    // Preview de imagem
-    document.getElementById('foto').addEventListener('change', previewImagem);
-    
-    // Configurações de tema
-    document.getElementById('tema').addEventListener('change', alterarTema);
-    document.getElementById('tema-escuro').addEventListener('change', alternarModoEscuro);
-    
-    // Período dos gráficos
-    document.querySelectorAll('[data-period]').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('[data-period]').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            const periodo = parseInt(this.getAttribute('data-period'));
-            atualizarGraficoMovimentacoes(periodo);
-        });
-    });
-}
-
-function configurarInterface() {
-    // Configurar data/hora atual
-    const agora = new Date();
-    document.getElementById('data-mov').value = formatarDataParaInput(agora);
-    
-    // Gerar código do produto
-    document.getElementById('codigo').value = 'PROD' + nextProdutoId.toString().padStart(4, '0');
-    
-    // Configurar datas padrão para filtros (últimos 30 dias)
-    const dataFim = new Date();
-    const dataInicio = new Date();
-    dataInicio.setDate(dataInicio.getDate() - 30);
-    
-    document.getElementById('data-inicio').value = formatarDataParaInput(dataInicio);
-    document.getElementById('data-fim').value = formatarDataParaInput(dataFim);
-    document.getElementById('filtro-data-inicio').value = formatarDataParaInput(dataInicio);
-    document.getElementById('filtro-data-fim').value = formatarDataParaInput(dataFim);
-    
-    // Atualizar informações do sistema
-    atualizarInformacoesSistema();
-}
-
-function configurarGraficos() {
-    // Gráfico de movimentações
-    const ctxMovimentacoes = document.getElementById('movimentacoesChart').getContext('2d');
-    window.graficoMovimentacoes = new Chart(ctxMovimentacoes, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [
-                {
-                    label: 'Entradas',
-                    data: [],
-                    borderColor: '#27ae60',
-                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                },
-                {
-                    label: 'Saídas',
-                    data: [],
-                    borderColor: '#e74c3c',
-                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1
-                    }
-                }
-            }
-        }
-    });
-    
-    // Gráfico de status do estoque
-    const ctxStatus = document.getElementById('statusEstoqueChart').getContext('2d');
-    window.graficoStatus = new Chart(ctxStatus, {
-        type: 'doughnut',
-        data: {
-            labels: ['Em Estoque', 'Estoque Baixo', 'Vencimento Próximo', 'Fora de Estoque'],
-            datasets: [{
-                data: [0, 0, 0, 0],
-                backgroundColor: [
-                    '#27ae60',
-                    '#f39c12',
-                    '#e74c3c',
-                    '#95a5a6'
-                ],
-                borderWidth: 2,
-                borderColor: '#fff'
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                }
-            }
-        }
-    });
-    
-    // Atualizar gráficos com dados reais
-    atualizarGraficoMovimentacoes(30);
-    atualizarGraficoStatus();
-}
-
-// =============================================
-// FUNÇÕES DE NAVEGAÇÃO
-// =============================================
-
-function mostrarPagina(pagina) {
-    // Esconder todas as páginas
-    document.querySelectorAll('.page-section').forEach(sec => {
-        sec.style.display = 'none';
-    });
-    
-    // Mostrar a página solicitada
-    const paginaElement = document.getElementById(pagina);
-    if (paginaElement) {
-        paginaElement.style.display = 'block';
-        
-        // Executar ações específicas da página
-        switch(pagina) {
-            case 'dashboard':
-                atualizarDashboard();
-                break;
-            case 'lista-produtos':
-                atualizarListaProdutos();
-                break;
-            case 'movimentacoes':
-                atualizarListaMovimentacoes();
-                atualizarSelectProdutos();
-                break;
-            case 'relatorios':
-                gerarRelatorio();
-                break;
-            case 'configuracoes':
-                atualizarInformacoesSistema();
-                break;
-        }
-        
-        // Atualizar título e breadcrumb
-        atualizarTituloPagina(pagina);
-        atualizarBreadcrumb(pagina);
-        
-        // Rolagem para o topo
-        window.scrollTo(0, 0);
-    }
-}
-
-function atualizarTituloPagina(pagina) {
-    const titulos = {
-        'dashboard': 'Dashboard',
-        'cadastro-produtos': 'Cadastro de Produtos',
-        'lista-produtos': 'Estoque de Produtos',
-        'movimentacoes': 'Movimentações de Estoque',
-        'relatorios': 'Relatórios',
-        'configuracoes': 'Configurações'
-    };
-    
-    document.getElementById('page-title').textContent = titulos[pagina] || 'Dashboard';
-}
-
-function atualizarBreadcrumb(pagina) {
-    const breadcrumbs = {
-        'dashboard': ['Home', 'Dashboard'],
-        'cadastro-produtos': ['Home', 'Produtos', 'Cadastro'],
-        'lista-produtos': ['Home', 'Produtos', 'Lista'],
-        'movimentacoes': ['Home', 'Movimentações'],
-        'relatorios': ['Home', 'Relatórios'],
-        'configuracoes': ['Home', 'Configurações']
-    };
-    
-    const breadcrumbItens = breadcrumbs[pagina] || ['Home', 'Dashboard'];
-    const breadcrumbElement = document.querySelector('.breadcrumb');
-    breadcrumbElement.innerHTML = '';
-    
-    breadcrumbItens.forEach((item, index) => {
-        const li = document.createElement('li');
-        li.className = index === breadcrumbItens.length - 1 ? 
-            'breadcrumb-item active' : 'breadcrumb-item';
-        
-        if (index === breadcrumbItens.length - 1) {
-            li.setAttribute('aria-current', 'page');
-            li.textContent = item;
-        } else {
-            const a = document.createElement('a');
-            a.href = '#';
-            a.textContent = item;
-            a.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (index === 0) {
-                    mostrarPagina('dashboard');
-                } else if (index === 1 && pagina.startsWith('produtos')) {
-                    mostrarPagina('lista-produtos');
-                }
-            });
-            li.appendChild(a);
-        }
-        
-        breadcrumbElement.appendChild(li);
-    });
-}
-
-// =============================================
-// FUNÇÕES DE PRODUTOS
-// =============================================
-
-function novoProduto() {
-    document.getElementById('form-produto').reset();
-    document.getElementById('codigo').value = 'PROD' + nextProdutoId.toString().padStart(4, '0');
-    document.getElementById('image-preview').style.display = 'none';
-    
-    // Definir data de fabricação padrão como hoje
-    document.getElementById('fabricacao').valueAsDate = new Date();
-}
-
-function salvarProduto(e) {
-    e.preventDefault();
-    
-    // Validar formulário
-    if (!validarFormularioProduto()) {
-        return;
-    }
-    
-    // Coletar dados do formulário
-    const produto = {
-        id: nextProdutoId++,
-        codigo: document.getElementById('codigo').value,
-        nome: document.getElementById('nome').value,
-        categoria: document.getElementById('categoria').value || 'Outros',
-        quantidade: parseInt(document.getElementById('quantidade').value),
-        estoqueMinimo: parseInt(document.getElementById('estoque-minimo').value) || 5,
-        tipo: document.getElementById('tipo').value,
-        lote: document.getElementById('lote').value || 'N/A',
-        fabricacao: document.getElementById('fabricacao').value,
-        validade: document.getElementById('validade').value,
-        fornecedor: document.getElementById('fornecedor').value || 'N/A',
-        descricao: document.getElementById('descricao').value,
-        preco: parseFloat(document.getElementById('preco').value) || 0,
-        dataCadastro: new Date().toISOString(),
-        foto: document.getElementById('image-preview').src || ''
-    };
-    
-    // Calcular status do produto
-    produto.status = calcularStatusProduto(produto);
-    
-    // Adicionar à lista
-    produtos.push(produto);
-    
-    // Salvar dados
-    salvarDados();
-    
-    // Feedback ao usuário
-    mostrarToast('Produto cadastrado com sucesso!', 'success');
-    
-    // Limpar formulário e preparar próximo
-    limparFormularioProduto();
-    
-    // Atualizar listas e dashboards
-    atualizarListaProdutos();
-    atualizarDashboard();
-}
-
-function validarFormularioProduto() {
-    const nome = document.getElementById('nome').value.trim();
-    const quantidade = document.getElementById('quantidade').value;
-    const tipo = document.getElementById('tipo').value;
-    
-    if (!nome) {
-        mostrarToast('Por favor, informe o nome do produto.', 'warning');
-        document.getElementById('nome').focus();
-        return false;
-    }
-    
-    if (!quantidade || quantidade < 0) {
-        mostrarToast('Por favor, informe uma quantidade válida.', 'warning');
-        document.getElementById('quantidade').focus();
-        return false;
-    }
-    
-    if (!tipo) {
-        mostrarToast('Por favor, selecione o tipo de embalagem.', 'warning');
-        document.getElementById('tipo').focus();
-        return false;
-    }
-    
-    // Verificar se já existe produto com o mesmo nome
-    const produtoExistente = produtos.find(p => 
-        p.nome.toLowerCase() === nome.toLowerCase() && 
-        p.tipo === tipo
-    );
-    
-    if (produtoExistente) {
-        if (!confirm('Já existe um produto com este nome e tipo. Deseja adicionar mesmo assim?')) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
-function calcularStatusProduto(produto) {
-    // Verificar validade
-    if (produto.validade) {
-        const hoje = new Date();
-        const validade = new Date(produto.validade);
-        const umAnoAntes = new Date(validade);
-        umAnoAntes.setFullYear(umAnoAntes.getFullYear() - 1);
-        
-        if (hoje > validade) {
-            return 'Fora de Estoque';
-        } else if (hoje > umAnoAntes) {
-            return 'Vencimento próximo';
-        }
-    }
-    
-    // Verificar estoque
-    if (produto.quantidade <= 0) {
-        return 'Fora de Estoque';
-    } else if (produto.quantidade <= produto.estoqueMinimo) {
-        return 'Estoque Baixo';
-    } else {
-        return 'Em Estoque';
-    }
-}
-
-function limparFormularioProduto() {
-    document.getElementById('form-produto').reset();
-    document.getElementById('codigo').value = 'PROD' + nextProdutoId.toString().padStart(4, '0');
-    document.getElementById('fabricacao').valueAsDate = new Date();
-    document.getElementById('image-preview').style.display = 'none';
-}
-
-function previewImagem(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    const preview = document.getElementById('image-preview');
-    const reader = new FileReader();
-    
-    reader.onload = function(e) {
-        preview.src = e.target.result;
-        preview.style.display = 'block';
-    };
-    
-    reader.readAsDataURL(file);
-}
-
-function filtrarProdutos() {
-    const termo = document.getElementById('buscar-produto').value.toLowerCase();
-    const categoria = document.getElementById('filtro-categoria').value;
-    const status = document.getElementById('filtro-status').value;
-    
-    currentFilter = {
-        termo: termo,
-        categoria: categoria,
-        status: status
-    };
-    
-    currentPage = 1;
-    atualizarListaProdutos();
-}
-
-function limparFiltros() {
-    document.getElementById('buscar-produto').value = '';
-    document.getElementById('filtro-categoria').value = '';
-    document.getElementById('filtro-status').value = '';
-    
-    currentFilter = {};
-    currentPage = 1;
-    atualizarListaProdutos();
-}
-
-function atualizarListaProdutos() {
-    const tbody = document.getElementById('tabela-produtos').querySelector('tbody');
-    tbody.innerHTML = '';
-    
-    // Aplicar filtros
-    let produtosFiltrados = produtos.filter(produto => {
-        // Filtro por termo de busca
-        if (currentFilter.termo) {
-            const busca = currentFilter.termo;
-            if (!produto.nome.toLowerCase().includes(busca) && 
-                !produto.categoria.toLowerCase().includes(busca) &&
-                !produto.codigo.toLowerCase().includes(busca)) {
-                return false;
-            }
-        }
-        
-        // Filtro por categoria
-        if (currentFilter.categoria && produto.categoria !== currentFilter.categoria) {
-            return false;
-        }
-        
-        // Filtro por status
-        if (currentFilter.status && produto.status !== currentFilter.status) {
-            return false;
-        }
-        
-        return true;
-    });
-    
-    // Ordenar por nome
-    produtosFiltrados.sort((a, b) => a.nome.localeCompare(b.nome));
-    
-    // Paginação
-    const totalPaginas = Math.ceil(produtosFiltrados.length / itemsPerPage);
-    const inicio = (currentPage - 1) * itemsPerPage;
-    const fim = inicio + itemsPerPage;
-    const produtosPagina = produtosFiltrados.slice(inicio, fim);
-    
-    // Preencher tabela
-    if (produtosPagina.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4">Nenhum produto encontrado</td></tr>';
-    } else {
-        produtosPagina.forEach(produto => {
-            const tr = document.createElement('tr');
-            
-            // Calcular dias para vencer (se aplicável)
-            let diasParaVencer = '-';
-            if (produto.validade) {
-                const hoje = new Date();
-                const validade = new Date(produto.validade);
-                const diffTime = validade - hoje;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                diasParaVencer = diffDays > 0 ? diffDays + ' dias' : 'Vencido';
-            }
-            
-            // Determinar classe do badge baseado no status
-            let badgeClass = 'bg-secondary';
-            switch(produto.status) {
-                case 'Em Estoque': badgeClass = 'bg-success'; break;
-                case 'Estoque Baixo': badgeClass = 'bg-warning'; break;
-                case 'Vencimento próximo': badgeClass = 'bg-danger'; break;
-                case 'Fora de Estoque': badgeClass = 'bg-secondary'; break;
-            }
-            
-            tr.innerHTML = `
-                <td>${produto.codigo}</td>
-                <td>${produto.nome}</td>
-                <td>${produto.categoria}</td>
-                <td>${produto.quantidade}</td>
-                <td>${produto.tipo}</td>
-                <td>${diasParaVencer}</td>
-                <td><span class="badge ${badgeClass}">${produto.status}</span></td>
-                <td>
-                    <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-info" onclick="editarProduto(${produto.id})" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-outline-primary" onclick="adicionarLote(${produto.id})" title="Adicionar Lote">
-                            <i class="fas fa-plus-circle"></i>
-                        </button>
-                        <button class="btn btn-outline-danger" onclick="excluirProduto(${produto.id})" title="Excluir">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            `;
-            
-            tbody.appendChild(tr);
-        });
-    }
-    
-    // Atualizar paginação
-    atualizarPaginacao(totalPaginas, 'paginacao', atualizarListaProdutos);
-    
-    // Atualizar informação de paginação
-    document.getElementById('info-paginacao').textContent = 
-        `Mostrando ${produtosPagina.length} de ${produtosFiltrados.length} registros`;
-}
-
-function editarProduto(id) {
-    const produto = produtos.find(p => p.id === id);
-    if (!produto) return;
-    
-    // Preencher formulário com dados do produto
-    document.getElementById('codigo').value = produto.codigo;
-    document.getElementById('nome').value = produto.nome;
-    document.getElementById('categoria').value = produto.categoria;
-    document.getElementById('quantidade').value = produto.quantidade;
-    document.getElementById('estoque-minimo').value = produto.estoqueMinimo;
-    document.getElementById('tipo').value = produto.tipo;
-    document.getElementById('lote').value = produto.lote;
-    document.getElementById('fabricacao').value = produto.fabricacao;
-    document.getElementById('validade').value = produto.validade;
-    document.getElementById('fornecedor').value = produto.fornecedor;
-    document.getElementById('descricao').value = produto.descricao;
-    document.getElementById('preco').value = produto.preco;
-    
-    if (produto.foto) {
-        document.getElementById('image-preview').src = produto.foto;
-        document.getElementById('image-preview').style.display = 'block';
-    }
-    
-    // Mostrar página de cadastro
-    mostrarPagina('cadastro-produtos');
-    
-    // Alterar comportamento do botão salvar para edição
-    const form = document.getElementById('form-produto');
-    form.onsubmit = function(e) {
-        e.preventDefault();
-        atualizarProduto(id);
-    };
-    
-    document.getElementById('btn-salvar').innerHTML = '<i class="fas fa-save me-1"></i> Atualizar Produto';
-}
-
-function atualizarProduto(id) {
-    const index = produtos.findIndex(p => p.id === id);
-    if (index === -1) return;
-    
-    // Coletar dados atualizados
-    produtos[index] = {
-        ...produtos[index],
-        nome: document.getElementById('nome').value,
-        categoria: document.getElementById('categoria').value || 'Outros',
-        quantidade: parseInt(document.getElementById('quantidade').value),
-        estoqueMinimo: parseInt(document.getElementById('estoque-minimo').value) || 5,
-        tipo: document.getElementById('tipo').value,
-        lote: document.getElementById('lote').value || 'N/A',
-        fabricacao: document.getElementById('fabricacao').value,
-        validade: document.getElementById('validade').value,
-        fornecedor: document.getElementById('fornecedor').value || 'N/A',
-        descricao: document.getElementById('descricao').value,
-        preco: parseFloat(document.getElementById('preco').value) || 0,
-        foto: document.getElementById('image-preview').src || ''
-    };
-    
-    // Recalcular status
-    produtos[index].status = calcularStatusProduto(produtos[index]);
-    
-    // Salvar dados
-    salvarDados();
-    
-    // Feedback
-    mostrarToast('Produto atualizado com sucesso!', 'success');
-    
-    // Restaurar comportamento normal do formulário
-    const form = document.getElementById('form-produto');
-    form.onsubmit = salvarProduto;
-    document.getElementById('btn-salvar').innerHTML = '<i class="fas fa-save me-1"></i> Salvar Produto';
-    
-    // Voltar para a lista
-    mostrarPagina('lista-produtos');
-}
-
-function adicionarLote(id) {
-    const produto = produtos.find(p => p.id === id);
-    if (!produto) return;
-    
-    // Criar um novo produto com mesmo nome mas lote diferente
-    const novoProduto = {
-        ...produto,
-        id: nextProdutoId++,
-        codigo: 'PROD' + nextProdutoId.toString().padStart(4, '0'),
-        lote: prompt('Informe o número do novo lote:', 'Lote ' + (produtos.filter(p => p.nome === produto.nome).length + 1)),
-        quantidade: 0,
-        fabricacao: formatarDataParaInput(new Date()),
-        validade: '',
-        dataCadastro: new Date().toISOString()
-    };
-    
-    if (!novoProduto.lote) return;
-    
-    produtos.push(novoProduto);
-    salvarDados();
-    
-    mostrarToast('Novo lote adicionado com sucesso!', 'success');
-    atualizarListaProdutos();
-}
-
-function excluirProduto(id) {
-    if (!confirm('Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.')) {
-        return;
-    }
-    
-    const index = produtos.findIndex(p => p.id === id);
-    if (index === -1) return;
-    
-    // Verificar se há movimentações associadas a este produto
-    const movimentacoesProduto = movimentacoes.filter(m => m.produtoId === id);
-    if (movimentacoesProduto.length > 0) {
-        if (!confirm(`Este produto possui ${movimentacoesProduto.length} movimentações registradas. Deseja excluí-lo mesmo assim?`)) {
-            return;
-        }
-    }
-    
-    produtos.splice(index, 1);
-    salvarDados();
-    
-    mostrarToast('Produto excluído com sucesso!', 'success');
-    atualizarListaProdutos();
-    atualizarDashboard();
-}
-
-// =============================================
-// FUNÇÕES DE MOVIMENTAÇÕES
-// =============================================
-
-function atualizarSelectProdutos() {
-    const select = document.getElementById('produto-mov');
-    select.innerHTML = '<option value="">Selecione um produto</option>';
-    
-    produtos.forEach(produto => {
-        const option = document.createElement('option');
-        option.value = produto.id;
-        option.textContent = `${produto.nome} (${produto.tipo}) - Estoque: ${produto.quantidade}`;
-        select.appendChild(option);
-    });
-}
-
-function registrarMovimentacao(e) {
-    e.preventDefault();
-    
-    // Validar formulário
-    if (!validarFormularioMovimentacao()) {
-        return;
-    }
-    
-    // Coletar dados
-    const movimentacao = {
-        id: nextMovimentacaoId++,
-        produtoId: parseInt(document.getElementById('produto-mov').value),
-        tipo: document.getElementById('tipo-mov').value,
-        quantidade: parseInt(document.getElementById('quantidade-mov').value),
-        motivo: document.getElementById('motivo-mov').value,
-        data: document.getElementById('data-mov').value,
-        observacao: document.getElementById('observacao-mov').value,
-        usuario: 'Usuário Atual', // Em um sistema real, pegar do login
-        dataRegistro: new Date().toISOString()
-    };
-    
-    // Encontrar produto
-    const produtoIndex = produtos.findIndex(p => p.id === movimentacao.produtoId);
-    if (produtoIndex === -1) {
-        mostrarToast('Produto não encontrado!', 'danger');
-        return;
-    }
-    
-    // Validar estoque para saída
-    if (movimentacao.tipo === 'Saída' && produtos[produtoIndex].quantidade < movimentacao.quantidade) {
-        mostrarToast('Estoque insuficiente para esta saída!', 'danger');
-        return;
-    }
-    
-    // Atualizar estoque do produto
-    if (movimentacao.tipo === 'Entrada') {
-        produtos[produtoIndex].quantidade += movimentacao.quantidade;
-    } else if (movimentacao.tipo === 'Saída') {
-        produtos[produtoIndex].quantidade -= movimentacao.quantidade;
-    }
-    // Ajuste não altera o estoque, apenas registra a movimentação
-    
-    // Recalcular status do produto
-    produtos[produtoIndex].status = calcularStatusProduto(produtos[produtoIndex]);
-    
-    // Adicionar movimentação
-    movimentacoes.push(movimentacao);
-    
-    // Salvar dados
-    salvarDados();
-    
-    // Feedback
-    mostrarToast('Movimentação registrada com sucesso!', 'success');
-    
-    // Limpar formulário
-    document.getElementById('form-movimentacao').reset();
-    document.getElementById('data-mov').value = formatarDataParaInput(new Date());
-    
-    // Atualizar interfaces
-    atualizarListaMovimentacoes();
-    atualizarDashboard();
-    atualizarSelectProdutos();
-}
-
-function validarFormularioMovimentacao() {
-    const produtoId = document.getElementById('produto-mov').value;
-    const tipo = document.getElementById('tipo-mov').value;
-    const quantidade = document.getElementById('quantidade-mov').value;
-    const motivo = document.getElementById('motivo-mov').value;
-    
-    if (!produtoId) {
-        mostrarToast('Por favor, selecione um produto.', 'warning');
-        return false;
-    }
-    
-    if (!tipo) {
-        mostrarToast('Por favor, selecione o tipo de movimentação.', 'warning');
-        return false;
-    }
-    
-    if (!quantidade || quantidade < 1) {
-        mostrarToast('Por favor, informe uma quantidade válida.', 'warning');
-        return false;
-    }
-    
-    if (!motivo) {
-        mostrarToast('Por favor, selecione o motivo da movimentação.', 'warning');
-        return false;
-    }
-    
-    return true;
-}
-
-function filtrarMovimentacoes() {
-    currentPage = 1;
-    atualizarListaMovimentacoes();
-}
-
-function atualizarListaMovimentacoes() {
-    const tbody = document.getElementById('tabela-movimentacoes').querySelector('tbody');
-    tbody.innerHTML = '';
-    
-    // Aplicar filtros
-    let movimentacoesFiltradas = movimentacoes.filter(mov => {
-        // Filtro por data
-        const dataInicio = document.getElementById('filtro-data-inicio').value;
-        const dataFim = document.getElementById('filtro-data-fim').value;
-        
-        if (dataInicio) {
-            const dataMov = new Date(mov.data);
-            const dataInicioFiltro = new Date(dataInicio);
-            if (dataMov < dataInicioFiltro) return false;
-        }
-        
-        if (dataFim) {
-            const dataMov = new Date(mov.data);
-            const dataFimFiltro = new Date(dataFim);
-            dataFimFiltro.setDate(dataFimFiltro.getDate() + 1); // Incluir o dia final
-            if (dataMov >= dataFimFiltro) return false;
-        }
-        
-        // Filtro por tipo
-        const tipo = document.getElementById('filtro-tipo-mov').value;
-        if (tipo && mov.tipo !== tipo) {
-            return false;
-        }
-        
-        return true;
-    });
-    
-    // Ordenar por data (mais recente primeiro)
-    movimentacoesFiltradas.sort((a, b) => new Date(b.data) - new Date(a.data));
-    
-    // Paginação
-    const totalPaginas = Math.ceil(movimentacoesFiltradas.length / itemsPerPage);
-    const inicio = (currentPage - 1) * itemsPerPage;
-    const fim = inicio + itemsPerPage;
-    const movimentacoesPagina = movimentacoesFiltradas.slice(inicio, fim);
-    
-    // Preencher tabela
-    if (movimentacoesPagina.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Nenhuma movimentação encontrada</td></tr>';
-    } else {
-        movimentacoesPagina.forEach(mov => {
-            const produto = produtos.find(p => p.id === mov.produtoId);
-            if (!produto) return;
-            
-            const tr = document.createElement('tr');
-            const dataFormatada = formatarData(new Date(mov.data));
-            
-            // Determinar cor do badge baseado no tipo
-            let badgeClass = 'bg-primary';
-            if (mov.tipo === 'Entrada') badgeClass = 'bg-success';
-            if (mov.tipo === 'Saída') badgeClass = 'bg-danger';
-            
-            tr.innerHTML = `
-                <td>${dataFormatada}</td>
-                <td>${produto.nome} (${produto.tipo})</td>
-                <td><span class="badge ${badgeClass}">${mov.tipo}</span></td>
-                <td>${mov.quantidade}</td>
-                <td>${mov.motivo}</td>
-                <td>${mov.usuario}</td>
-            `;
-            
-            tbody.appendChild(tr);
-        });
-    }
-    
-    // Atualizar paginação
-    atualizarPaginacao(totalPaginas, 'paginacao-mov', atualizarListaMovimentacoes);
-    
-    // Atualizar informação de paginação
-    document.getElementById('info-paginacao-mov').textContent = 
-        `Mostrando ${movimentacoesPagina.length} de ${movimentacoesFiltradas.length} registros`;
-}
-
-// =============================================
-// FUNÇÕES DE RELATÓRIOS
-// =============================================
-
-function gerarRelatorio() {
-    const dataInicio = document.getElementById('data-inicio').value;
-    const dataFim = document.getElementById('data-fim').value;
-    const tipo = document.getElementById('tipo-relatorio').value;
-    
-    // Aplicar filtros às movimentações
-    let movimentacoesFiltradas = movimentacoes.filter(mov => {
-        // Filtro por data
-        if (dataInicio) {
-            const dataMov = new Date(mov.data);
-            const dataInicioFiltro = new Date(dataInicio);
-            if (dataMov < dataInicioFiltro) return false;
-        }
-        
-        if (dataFim) {
-            const dataMov = new Date(mov.data);
-            const dataFimFiltro = new Date(dataFim);
-            dataFimFiltro.setDate(dataFimFiltro.getDate() + 1);
-            if (dataMov >= dataFimFiltro) return false;
-        }
-        
-        // Filtro por tipo
-        if (tipo && mov.tipo !== tipo) {
-            return false;
-        }
-        
-        return true;
-    });
-    
-    // Calcular totais
-    const totalEntradas = movimentacoesFiltradas
-        .filter(m => m.tipo === 'Entrada')
-        .reduce((sum, m) => sum + m.quantidade, 0);
-    
-    const totalSaidas = movimentacoesFiltradas
-        .filter(m => m.tipo === 'Saída')
-        .reduce((sum, m) => sum + m.quantidade, 0);
-    
-    const saldoFinal = totalEntradas - totalSaidas;
-    
-    // Atualizar cards de estatísticas
-    document.getElementById('total-entradas').textContent = totalEntradas;
-    document.getElementById('total-saidas').textContent = totalSaidas;
-    document.getElementById('saldo-final').textContent = saldoFinal;
-    document.getElementById('total-movimentacoes').textContent = movimentacoesFiltradas.length;
-    
-    // Preencher tabela de relatório
-    const tbody = document.getElementById('tabela-relatorio').querySelector('tbody');
-    tbody.innerHTML = '';
-    
-    if (movimentacoesFiltradas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Nenhuma movimentação encontrada no período</td></tr>';
-    } else {
-        // Ordenar por data (mais recente primeiro)
-        movimentacoesFiltradas.sort((a, b) => new Date(b.data) - new Date(a.data));
-        
-        movimentacoesFiltradas.forEach(mov => {
-            const produto = produtos.find(p => p.id === mov.produtoId);
-            if (!produto) return;
-            
-            const tr = document.createElement('tr');
-            const dataFormatada = formatarData(new Date(mov.data));
-            
-            tr.innerHTML = `
-                <td>${dataFormatada}</td>
-                <td>${produto.nome} (${produto.tipo})</td>
-                <td>${mov.tipo}</td>
-                <td>${mov.quantidade}</td>
-                <td>${mov.motivo}</td>
-                <td>${mov.usuario}</td>
-            `;
-            
-            tbody.appendChild(tr);
-        });
-    }
-    
-    mostrarToast('Relatório gerado com sucesso!', 'success');
-}
-
-function gerarPDFRelatorio() {
-    mostrarToast('Recurso de PDF em desenvolvimento...', 'info');
-    // Em uma implementação real, aqui seria integrado com uma biblioteca como jsPDF
-}
-
-function exportarCSV() {
-    // Coletar dados da tabela de relatório
-    const linhas = [];
-    const cabecalhos = ['Data', 'Produto', 'Tipo', 'Quantidade', 'Motivo', 'Usuário'];
-    linhas.push(cabecalhos.join(','));
-    
-    const linhasTabela = document.querySelectorAll('#tabela-relatorio tbody tr');
-    linhasTabela.forEach(linha => {
-        const celulas = linha.querySelectorAll('td');
-        if (celulas.length === 6) {
-            const valores = Array.from(celulas).map(celula => 
-                `"${celula.textContent.replace(/"/g, '""')}"`
-            );
-            linhas.push(valores.join(','));
-        }
-    });
-    
-    // Criar e baixar arquivo CSV
-    const csvContent = linhas.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    
-    const dataAtual = formatarData(new Date(), 'csv');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `relatorio_estoque_${dataAtual}.csv`);
-    link.style.visibility = 'hidden';
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    mostrarToast('CSV exportado com sucesso!', 'success');
-}
-
-function imprimirRelatorio() {
-    window.print();
-}
-
-// =============================================
-// FUNÇÕES DE DASHBOARD
-// =============================================
-
-function atualizarDashboard() {
-    // Atualizar cards de estatísticas
-    const totalProdutos = produtos.length;
-    const estoqueBaixo = produtos.filter(p => p.status === 'Estoque Baixo').length;
-    const vencimentoProximo = produtos.filter(p => p.status === 'Vencimento próximo').length;
-    const valorTotal = produtos.reduce((sum, p) => sum + (p.quantidade * p.preco), 0);
-    
-    document.getElementById('total-produtos').textContent = totalProdutos;
-    document.getElementById('estoque-baixo').textContent = estoqueBaixo;
-    document.getElementById('vencimento-proximo').textContent = vencimentoProximo;
-    document.getElementById('valor-total').textContent = formatarMoeda(valorTotal);
-    
-    // Atualizar tabela de estoque baixo
-    const produtosEstoqueBaixo = produtos.filter(p => 
-        p.status === 'Estoque Baixo' || p.status === 'Vencimento próximo'
-    ).slice(0, 5); // Limitar a 5 produtos
-    
-    const tbody = document.getElementById('tabela-estoque-baixo').querySelector('tbody');
-    tbody.innerHTML = '';
-    
-    if (produtosEstoqueBaixo.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Nenhum produto com estoque baixo</td></tr>';
-    } else {
-        produtosEstoqueBaixo.forEach(produto => {
-            const tr = document.createElement('tr');
-            
-            // Determinar texto de ação
-            let acao = 'Monitorar';
-            if (produto.status === 'Estoque Baixo') acao = 'Repor Estoque';
-            if (produto.status === 'Vencimento próximo') acao = 'Verificar Validade';
-            
-            tr.innerHTML = `
-                <td>${produto.nome} (${produto.tipo})</td>
-                <td>${produto.quantidade}</td>
-                <td>${produto.estoqueMinimo}</td>
-                <td><span class="badge ${produto.status === 'Estoque Baixo' ? 'bg-warning' : 'bg-danger'}">${produto.status}</span></td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="editarProduto(${produto.id})">
-                        ${acao}
-                    </button>
-                </td>
-            `;
-            
-            tbody.appendChild(tr);
-        });
-    }
-    
-    // Atualizar gráficos
-    atualizarGraficoStatus();
-}
-
-function atualizarGraficoMovimentacoes(periodoDias = 30) {
-    if (!window.graficoMovimentacoes) return;
-    
-    const dataFim = new Date();
-    const dataInicio = new Date();
-    dataInicio.setDate(dataInicio.getDate() - periodoDias);
-    
-    // Agrupar movimentações por dia
-    const movimentacoesPeriodo = movimentacoes.filter(mov => {
-        const dataMov = new Date(mov.data);
-        return dataMov >= dataInicio && dataMov <= dataFim;
-    });
-    
-    // Criar array de datas no período
-    const datas = [];
-    const entradasPorDia = {};
-    const saidasPorDia = {};
-    
-    for (let i = 0; i < periodoDias; i++) {
-        const data = new Date(dataInicio);
-        data.setDate(data.getDate() + i);
-        const dataStr = formatarData(data, 'grafico');
-        datas.push(dataStr);
-        entradasPorDia[dataStr] = 0;
-        saidasPorDia[dataStr] = 0;
-    }
-    
-    // Contar movimentações por dia
-    movimentacoesPeriodo.forEach(mov => {
-        const dataMov = new Date(mov.data);
-        const dataStr = formatarData(dataMov, 'grafico');
-        
-        if (mov.tipo === 'Entrada') {
-            entradasPorDia[dataStr] += mov.quantidade;
-        } else if (mov.tipo === 'Saída') {
-            saidasPorDia[dataStr] += mov.quantidade;
-        }
-    });
-    
-    // Preparar dados para o gráfico
-    const dadosEntradas = datas.map(data => entradasPorDia[data] || 0);
-    const dadosSaidas = datas.map(data => saidasPorDia[data] || 0);
-    
-    // Atualizar gráfico
-    window.graficoMovimentacoes.data.labels = datas;
-    window.graficoMovimentacoes.data.datasets[0].data = dadosEntradas;
-    window.graficoMovimentacoes.data.datasets[1].data = dadosSaidas;
-    window.graficoMovimentacoes.update();
-}
-
-function atualizarGraficoStatus() {
-    if (!window.graficoStatus) return;
-    
-    const statusCount = {
-        'Em Estoque': 0,
-        'Estoque Baixo': 0,
-        'Vencimento próximo': 0,
-        'Fora de Estoque': 0
-    };
-    
-    produtos.forEach(produto => {
-        statusCount[produto.status]++;
-    });
-    
-    window.graficoStatus.data.datasets[0].data = [
-        statusCount['Em Estoque'],
-        statusCount['Estoque Baixo'],
-        statusCount['Vencimento próximo'],
-        statusCount['Fora de Estoque']
-    ];
-    
-    window.graficoStatus.update();
-}
-
-// =============================================
-// FUNÇÕES DE BACKUP E DADOS
-// =============================================
-
-function salvarDados() {
-    const dados = {
-        produtos: produtos,
-        movimentacoes: movimentacoes,
-        nextProdutoId: nextProdutoId,
-        nextMovimentacaoId: nextMovimentacaoId,
-        ultimoBackup: new Date().toISOString(),
-        versao: '1.0.0'
-    };
-    
-    localStorage.setItem('estoqueProData', JSON.stringify(dados));
-    atualizarInformacoesSistema();
-}
-
-function carregarDados() {
-    const dadosSalvos = localStorage.getItem('estoqueProData');
-    
-    if (dadosSalvos) {
-        try {
-            const dados = JSON.parse(dadosSalvos);
-            produtos = dados.produtos || [];
-            movimentacoes = dados.movimentacoes || [];
-            nextProdutoId = dados.nextProdutoId || 1;
-            nextMovimentacaoId = dados.nextMovimentacaoId || 1;
-            
-            console.log('Dados carregados com sucesso:', {
-                produtos: produtos.length,
-                movimentacoes: movimentacoes.length
-            });
-        } catch (error) {
-            console.error('Erro ao carregar dados:', error);
-            mostrarToast('Erro ao carregar dados salvos. Iniciando com dados vazios.', 'warning');
-        }
-    } else {
-        console.log('Nenhum dado salvo encontrado. Iniciando com dados de exemplo.');
-        carregarDadosExemplo();
-    }
-}
-
-function carregarDadosExemplo() {
-    // Adicionar alguns produtos de exemplo
-    const produtosExemplo = [
-        {
-            id: 1,
-            codigo: 'PROD0001',
-            nome: 'Produto A',
-            categoria: 'Eletrônicos',
-            quantidade: 50,
-            estoqueMinimo: 10,
-            tipo: 'Caixa',
-            lote: 'Lote A',
-            fabricacao: '2023-01-15',
-            validade: '2025-01-15',
-            fornecedor: 'Fornecedor X',
-            descricao: 'Produto de exemplo A',
-            preco: 29.99,
-            status: 'Em Estoque',
-            dataCadastro: '2023-01-20T10:00:00.000Z'
-        },
-        {
-            id: 2,
-            codigo: 'PROD0002',
-            nome: 'Produto B',
-            categoria: 'Informática',
-            quantidade: 5,
-            estoqueMinimo: 10,
-            tipo: 'Unidade',
-            lote: 'Lote B',
-            fabricacao: '2023-03-10',
-            validade: '2024-03-10',
-            fornecedor: 'Fornecedor Y',
-            descricao: 'Produto de exemplo B',
-            preco: 149.90,
-            status: 'Estoque Baixo',
-            dataCadastro: '2023-03-15T14:30:00.000Z'
-        }
-    ];
-    
-    produtos.push(...produtosExemplo);
-    nextProdutoId = 3;
-    
-    // Adicionar algumas movimentações de exemplo
-    const hoje = new Date();
-    const umaSemanaAtras = new Date(hoje);
-    umaSemanaAtras.setDate(umaSemanaAtras.getDate() - 7);
-    
-    const movimentacoesExemplo = [
-        {
-            id: 1,
-            produtoId: 1,
-            tipo: 'Entrada',
-            quantidade: 50,
-            motivo: 'Compra',
-            data: formatarDataParaInput(umaSemanaAtras),
-            observacao: 'Compra inicial',
-            usuario: 'Sistema',
-            dataRegistro: umaSemanaAtras.toISOString()
-        },
-        {
-            id: 2,
-            produtoId: 2,
-            tipo: 'Entrada',
-            quantidade: 20,
-            motivo: 'Compra',
-            data: formatarDataParaInput(umaSemanaAtras),
-            observacao: 'Compra inicial',
-            usuario: 'Sistema',
-            dataRegistro: umaSemanaAtras.toISOString()
-        },
-        {
-            id: 3,
-            produtoId: 2,
-            tipo: 'Saída',
-            quantidade: 15,
-            motivo: 'Venda',
-            data: formatarDataParaInput(hoje),
-            observacao: 'Venda para cliente Z',
-            usuario: 'Sistema',
-            dataRegistro: hoje.toISOString()
-        }
-    ];
-    
-    movimentacoes.push(...movimentacoesExemplo);
-    nextMovimentacaoId = 4;
-    
-    salvarDados();
-}
-
-function exportarDados() {
-    const dados = {
-        produtos: produtos,
-        movimentacoes: movimentacoes,
-        nextProdutoId: nextProdutoId,
-        nextMovimentacaoId: nextMovimentacaoId,
-        dataExportacao: new Date().toISOString(),
-        versao: '1.0.0'
-    };
-    
-    const dadosStr = JSON.stringify(dados, null, 2);
-    const blob = new Blob([dadosStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    
-    a.href = url;
-    a.download = `backup_estoque_${formatarData(new Date(), 'arquivo')}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    mostrarToast('Dados exportados com sucesso!', 'success');
-}
-
-function importarDados(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const dados = JSON.parse(e.target.result);
-            
-            // Validar estrutura
-            if (!dados.produtos || !dados.movimentacoes) {
-                throw new Error('Estrutura de arquivo inválida');
-            }
-            
-            if (!confirm(`Isso substituirá todos os dados atuais (${produtos.length} produtos, ${movimentacoes.length} movimentações). Continuar?`)) {
-                return;
-            }
-            
-            // Substituir dados
-            produtos = dados.produtos;
-            movimentacoes = dados.movimentacoes;
-            nextProdutoId = dados.nextProdutoId || produtos.length + 1;
-            nextMovimentacaoId = dados.nextMovimentacaoId || movimentacoes.length + 1;
-            
-            salvarDados();
-            mostrarToast('Dados importados com sucesso!', 'success');
-            
-            // Atualizar interfaces
-            atualizarDashboard();
-            atualizarListaProdutos();
-            atualizarListaMovimentacoes();
-            
-        } catch (error) {
-            console.error('Erro ao importar dados:', error);
-            mostrarToast('Erro ao importar dados. Arquivo inválido.', 'danger');
-        }
-    };
-    
-    reader.readAsText(file);
-    e.target.value = ''; // Limpar input
-}
-
-function limparDados() {
-    if (!confirm('Tem certeza que deseja limpar TODOS os dados? Esta ação não pode ser desfeita.')) {
-        return;
-    }
-    
-    if (!confirm('ISSO EXCLUIRÁ PERMANENTEMENTE TODOS OS PRODUTOS E MOVIMENTAÇÕES. CONFIRMAR?')) {
-        return;
-    }
-    
-    produtos = [];
-    movimentacoes = [];
-    nextProdutoId = 1;
-    nextMovimentacaoId = 1;
-    
-    salvarDados();
-    mostrarToast('Todos os dados foram limpos.', 'info');
-    
-    // Recarregar dados de exemplo
-    carregarDadosExemplo();
-    atualizarDashboard();
-    atualizarListaProdutos();
-}
-
-function iniciarBackupAutomatico() {
-    // Backup automático a cada 5 minutos (300000 ms)
-    setInterval(() => {
-        if (document.getElementById('backup-automatico')?.checked !== false) {
-            salvarDados();
-            console.log('Backup automático realizado:', new Date().toLocaleString());
-        }
-    }, 300000);
-}
-
-// =============================================
-// FUNÇÕES DE CONFIGURAÇÃO
-// =============================================
-
-function atualizarInformacoesSistema() {
-    document.getElementById('info-total-produtos').textContent = produtos.length;
-    document.getElementById('info-total-movimentacoes').textContent = movimentacoes.length;
-    
-    const ultimoBackup = localStorage.getItem('estoqueProData') ? 
-        new Date(JSON.parse(localStorage.getItem('estoqueProData')).ultimoBackup || new Date()) : 
-        new Date();
-    
-    document.getElementById('ultimo-backup').textContent = formatarData(ultimoBackup);
-    document.getElementById('ultima-atualizacao').textContent = formatarData(new Date());
-}
-
-function alterarTema() {
-    const tema = document.getElementById('tema').value;
-    temaAtual = tema;
-    
-    // Remover classes de tema anteriores
-    document.body.classList.remove('tema-azul', 'tema-verde', 'tema-roxo', 'tema-vermelho');
-    
-    // Adicionar classe do tema selecionado
-    document.body.classList.add(`tema-${tema}`);
-    
-    // Atualizar variáveis CSS baseadas no tema
-    atualizarCoresTema(tema);
-    
-    mostrarToast(`Tema alterado para ${tema}`, 'success');
-}
-
-function atualizarCoresTema(tema) {
-    const root = document.documentElement;
-    
-    const cores = {
-        azul: { primaria: '#3498db', secundaria: '#2c3e50' },
-        verde: { primaria: '#27ae60', secundaria: '#16a085' },
-        roxo: { primaria: '#9b59b6', secundaria: '#8e44ad' },
-        vermelho: { primaria: '#e74c3c', secundaria: '#c0392b' }
-    };
-    
-    const cor = cores[tema] || cores.azul;
-    root.style.setProperty('--primary-color', cor.primaria);
-    root.style.setProperty('--secondary-color', cor.secundaria);
-}
-
-function alternarModoEscuro() {
-    document.body.classList.toggle('modo-escuro');
-    const modo = document.body.classList.contains('modo-escuro') ? 'escuro' : 'claro';
-    mostrarToast(`Modo ${modo} ativado`, 'success');
-}
-
-// =============================================
-// FUNÇÕES UTILITÁRIAS
-// =============================================
-
-function mostrarToast(mensagem, tipo = 'info') {
-    // Criar elemento toast
-    const toastContainer = document.querySelector('.toast-container');
-    const toastId = 'toast-' + Date.now();
-    
-    const toastHTML = `
-        <div id="${toastId}" class="toast align-items-center text-white bg-${tipo} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    ${mensagem}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    `;
-    
-    toastContainer.insertAdjacentHTML('beforeend', toastHTML);
-    
-    // Mostrar toast
-    const toastElement = document.getElementById(toastId);
-    const toast = new bootstrap.Toast(toastElement, { delay: 4000 });
-    toast.show();
-    
-    // Remover após esconder
-    toastElement.addEventListener('hidden.bs.toast', function() {
-        toastElement.remove();
-    });
-}
-
-function formatarData(data, formato = 'padrao') {
-    if (!data) return '-';
-    
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const ano = data.getFullYear();
-    const horas = String(data.getHours()).padStart(2, '0');
-    const minutos = String(data.getMinutes()).padStart(2, '0');
-    
-    switch(formato) {
-        case 'csv':
-            return `${dia}-${mes}-${ano}`;
-        case 'grafico':
-            return `${dia}/${mes}`;
-        case 'arquivo':
-            return `${ano}${mes}${dia}_${horas}${minutos}`;
-        default:
-            return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
-    }
-}
-
-function formatarDataParaInput(data) {
-    if (!data) return '';
-    
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    const horas = String(data.getHours()).padStart(2, '0');
-    const minutos = String(data.getMinutes()).padStart(2, '0');
-    
-    return `${ano}-${mes}-${dia}T${horas}:${minutos}`;
-}
-
-function formatarMoeda(valor) {
-    return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-    }).format(valor);
-}
-
-function atualizarPaginacao(totalPaginas, elementoId, callback) {
-    const paginacao = document.getElementById(elementoId);
-    paginacao.innerHTML = '';
-    
-    if (totalPaginas <= 1) return;
-    
-    // Botão anterior
-    const liAnterior = document.createElement('li');
-    liAnterior.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-    liAnterior.innerHTML = `<a class="page-link" href="#">Anterior</a>`;
-    liAnterior.addEventListener('click', function(e) {
-        e.preventDefault();
-        if (currentPage > 1) {
-            currentPage--;
-            callback();
-        }
-    });
-    paginacao.appendChild(liAnterior);
-    
-    // Páginas
-    const inicio = Math.max(1, currentPage - 2);
-    const fim = Math.min(totalPaginas, currentPage + 2);
-    
-    for (let i = inicio; i <= fim; i++) {
-        const li = document.createElement('li');
-        li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-        li.addEventListener('click', function(e) {
-            e.preventDefault();
-            currentPage = i;
-            callback();
-        });
-        paginacao.appendChild(li);
-    }
-    
-    // Botão próximo
-    const liProximo = document.createElement('li');
-    liProximo.className = `page-item ${currentPage === totalPaginas ? 'disabled' : ''}`;
-    liProximo.innerHTML = `<a class="page-link" href="#">Próxima</a>`;
-    liProximo.addEventListener('click', function(e) {
-        e.preventDefault();
-        if (currentPage < totalPaginas) {
-            currentPage++;
-            callback();
-        }
-    });
-    paginacao.appendChild(liProximo);
-}
-
-// =============================================
-// INICIALIZAÇÃO DE FUNÇÕES GLOBAIS
-// =============================================
-
-// Tornar funções necessárias disponíveis globalmente para os event listeners HTML
-window.editarProduto = editarProduto;
-window.adicionarLote = adicionarLote;
-window.excluirProduto = excluirProduto;
-
-// Exportar para CSV (função simplificada para demonstração)
-function exportarExcel() {
-    const linhas = [];
-    const cabecalhos = ['Código', 'Produto', 'Categoria', 'Quantidade', 'Tipo', 'Status', 'Preço'];
-    linhas.push(cabecalhos.join('\t'));
-    
-    produtos.forEach(produto => {
-        const linha = [
-            produto.codigo,
-            produto.nome,
-            produto.categoria,
-            produto.quantidade,
-            produto.tipo,
-            produto.status,
-            produto.preco
-        ].join('\t');
-        
-        linhas.push(linha);
-    });
-    
-    const conteudo = linhas.join('\n');
-    const blob = new Blob([conteudo], { type: 'application/vnd.ms-excel' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    
-    a.href = url;
-    a.download = `estoque_${formatarData(new Date(), 'arquivo')}.xls`;
-    a.click();
-    
-    mostrarToast('Planilha exportada com sucesso!', 'success');
-}
-
-// Gerar PDF (função simplificada para demonstração)
-function gerarPDFProduto() {
-    mostrarToast('Funcionalidade de PDF será implementada em breve!', 'info');
-}
-
-// Inicializar quando a janela for redimensionada (para ajustes responsivos)
-window.addEventListener('resize', function() {
-    if (window.innerWidth >= 768) {
-        document.getElementById('sidebar').classList.remove('active');
-    }
-});
-    </script>
+    <!-- Custom JS -->
+    <script src="app.js"></script>
 </body>
 </html>
